@@ -6,6 +6,7 @@
 <title>Ischium's Collection</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dp5ayfo4z/image/upload/v1775668521/A5FB6ECA8E02B834821907C7618741E5_uzf777.png">
 <style>
 /* ═══════════════════════════════════════════
    TOKENS
@@ -348,7 +349,7 @@ body {
   margin-bottom: 2.5rem;
 }
 .char-tagline {
-  font-size: 1.2rem; font-weight: 300;
+  font-size: 1.2rem; font-weight: 400;
   line-height: 1.7; letter-spacing: 0.01em;
   color: var(--ink2); max-width: 40ch;
   margin-bottom: 3rem;
@@ -999,7 +1000,7 @@ const CHARS = [
 {
   id:'phorion', index:'01 / 05', name:'Phorion', nameAlt:'曦 — Phosphorus',
   accent:'var(--ph)', accentHex:'#2d5a3d',
-  tagline:'"He walks into any room already knowing what everyone wants."',
+  tagline:`He walks into any room already knowing what everyone wants.<br>他推门而入的那一刻，所有人的底牌已不再是秘密。`,
   image:'https://res.cloudinary.com/dp5ayfo4z/image/upload/f_auto,q_auto/Phorion_ch2dmx', // 填入路径 e.g. images/phorion.jpg
   stats:[
     {l:'职业', v:'某养老办公室主任'},
@@ -1080,7 +1081,7 @@ const CHARS = [
 {
   id:'hesperon', index:'02 / 05', name:'Hesperon', nameAlt:'暮 — Hesperus',
   accent:'var(--hs)', accentHex:'#1e3a5c',
-  tagline:'"He knows how everything breaks. He has never considered that he could."',
+  tagline:'He knows how everything breaks. He has never considered that he could.<br>他熟知万物崩溃的方式，却从未想过自己也会。',
   image:'https://res.cloudinary.com/dp5ayfo4z/image/upload/f_auto,q_auto/Hesperon_o75evp',
   stats:[
     {l:'职业', v:'魔法研究所图书管理员'},
@@ -1165,7 +1166,7 @@ const CHARS = [
 {
   id:'pieuvre', index:'03 / 05', name:'Pieuvre', nameAlt:'also known as Piv',
   accent:'var(--pv)', accentHex:'#7a3b28',
-  tagline:`"The most informed person in the room never looks like she's paying attention."`,
+  tagline:`The most informed person in the room never looks like she's paying attention.<br>她从不像在留意，却从未错过机密。`,
   image:'',
   stats:[
     {l:'MBTI', v:'— 待填写 —'},
@@ -1187,7 +1188,7 @@ const CHARS = [
 {
   id:'dul', index:'04 / 05', name:'Dullahann', nameAlt:'also known as Dul',
   accent:'var(--dl)', accentHex:'#4a3060',
-  tagline:'"Something was taken. Something was given. The burning is how he keeps on going."',
+  tagline:'Something was taken. Something was given. The burning is how he keeps on going.<br>有所失，有所偿。凭此炽焰，方得往。',
   image:'',
   stats:[
     {l:'MBTI', v:'— 待填写 —'},
@@ -1209,7 +1210,7 @@ const CHARS = [
 {
   id:'medici', index:'05 / 05', name:'Médici', nameAlt:'— 待填写 —',
   accent:'var(--md)', accentHex:'#8a6c2a',
-  tagline:'"Everything he feels, he says. Everything he does, he means."',
+  tagline:'Everything he feels, he says. Everything he does, he means.<br>心里想的全说出口，做过的事全都当真。',
   image:'',
   stats:[
     {l:'MBTI', v:'— 待填写 —'},
@@ -1268,13 +1269,35 @@ const CP_DATA = {
         <div class="dialogue-block">
           <div class="dialogue-line">
             <strong>Hesperon</strong>
-            「你知道我算过多少次。」
+            「......你在这儿坐了多久？」
           </div>
           <div class="dialogue-line highlight">
             <strong>Phorion</strong>
-            「我知道。我也想过了，值得。」
+            「不重要。」
           </div>
+		  <div class="dialogue-line">
+		    <strong>Hesperon</strong>
+		    「你看起来比我还难看。」
+		  </div>
+		  <div class="dialogue-line highlight">
+		    <strong>Phorion</strong>
+		    「嗯，但我没有躺在病床上。」
+		  </div>
         </div>
+		<p>安静了一会儿，Hesperon把目光移到天花板上，又移回来。</p>
+		<div class="dialogue-block">
+		  <div class="dialogue-line">
+		    <strong>Hesperon</strong>
+		    「我演算过很多遍。」
+		  </div>
+		  </div>
+		  <p>Phorion没有问他算的是什么。</p>
+		  <div class="dialogue-block">
+		  <div class="dialogue-line highlight">
+		    <strong>Phorion</strong>
+		    「我知道。我的结论和你一样。」
+		  </div>
+		  </div>
         <p>他们之间有过很多种沉默，在这一次的沉默里，什么都不用再确认了。</p>
         <p><em>If not now, when?</em></p>`
       },
@@ -1283,17 +1306,16 @@ const CP_DATA = {
         event:'战后日常',
         text:`<p>两个人各自挂着一个不起眼的闲职，各自以不被注意的方式继续做着该做的事。Hesperon守着他的图书馆和实验室，Phorion有一间自己的办公室，偶尔处理政务，大多数时候提前离开。</p>
 		<p>他们白日生活的交集不多，但总是在该出现的时候出现。有时候Phorion会绕路去接他，有时候Hesperon抬头发现时间到了，就把自己送去Phorion会在的地方。</p>
-        <p>Phorion隔三差五把在实验室里长成蘑菇的Hesperon拽出来，带他去一个地方，说是随便走走。当然不是随便走走。Hesperon知道，但从不拆穿，跟着就是了。</p>
-        <p>偶尔Hesperon在书房里哼歌，Phorion就站在门口不进去，像偷食的猫一样屏息听完。<br>Phorion喜欢音乐剧，会花心思挑选值得看的带Hesperon去。他出来之后，开口第一句评价了各篇目的和声结构。</p>
-		<p>选对了^^。</p>`
+        <p>Phorion隔三差五把在实验室里长成蘑菇的Hesperon拽出来，带他去一个地方，说是随便走走。<br>当然不是随便走走。<br>Hesperon知道，但从不拆穿，跟着就是了。</p>
+        <p>偶尔Hesperon在书房里哼歌，Phorion就站在门口屏息听完。你说录音？反正在常用的终端里没有。<br>Phorion喜欢音乐剧，会花心思挑选值得看的带Hesperon去。如果他出来之后，开口第一句评价的是各篇目的和声结构，而不是“怎么一到关键时刻就唱歌”，说明选对了。</p>`
       },
       {
         era:'一些心路历程',
         event:'Phorion的圈地逻辑',
         text:`<p>他像一条龙，安静地盘踞在自己的珍宝周围。</p>
-        <p>起初是本能。不让任何人靠得太近，不让任何目光在Hesperon身上停留太久。他给自己找了个保护战略资产的理由，勉强说得过去。<br>中期开始在Hesperon不知情的地方，替他拔掉一些长在暗处的刺。危机之后，他不再费心给自己找理由了。他很清楚自己在做什么，并且毫无愧疚。</p>
-        <p>战后圈地密度比战时更高。</p>
-        <p>P但Phorion圈地的方式从来不是限制。对一个独自扛过所有人事阻力的Hesperon来说，这不是围栏，是屋檐。
+        <p>起初是本能。不让任何人靠得太近，不让任何目光在Hesperon身上停留太久。他给自己找了个保护战略资产的理由，勉强说得过去。<br>中期开始在Hesperon不知情的地方，替他拔掉一些长在暗处的刺。危机之后，他不再费心给自己找理由了。他很清楚自己在做什么，并且毫无愧疚。
+        <br>战后圈地密度比战时更高。</p>
+        <p>但Phorion圈地的方式从来不是限制，对习惯于独自扛过所有人事阻力的一只Hesperon来说，这不是围栏，是屋檐。
 		<span style="background: var(--bg);color: var(--bg);cursor: pointer;transition: color 0.3s;padding: 0 2px;" onmouseover="this.style.color='var(--ink2)'"onmouseout="this.style.color='var(--bg)'">肉麻两公婆。</span></p>
         <div class="dialogue-block">
           <div class="dialogue-line">
@@ -1302,17 +1324,17 @@ const CP_DATA = {
           </div>
           <div class="dialogue-line highlight">
             <strong>Phorion</strong>
-            「所以你要再靠近一点，方便我盯。」（笑）
+            「所以你要再靠近一点，方便我盯（笑）」
           </div>
         </div>
-        <p>此处省略。<br>总之第二天Phorion心情很好。</p>`
+        <p>此处省略。<br>总之第二天Phorion心情很好^^</p>`
       },
     ],
     vignettes:[
-      {label:'SNS互动', text:`Phorion的小号叫'没头脑和不高兴'。日常用途：给Médici骂上司的帖子点赞，截图，发给Hesperon，然后两个人各自在自己的位置上毫无形象地笑。`},
-      {label:'书房', text:'他们后来有了一张足够大的桌子。Hesperon那半边永远堆着文献和草稿纸，Phorion那半边干净得像没人用过。但Phorion的笔经常出现在Hesperon那一侧，Hesperon的咖啡杯也总是不知不觉挪到了Phorion那边。'},
-      {label:'看电影', text:'周末下班洗完澡窝进沙发，准备好零食和舒服的毯子，开始指〇王马拉松。从护戒使者团出发看到王者归来。Hesperon中途开始分析精灵的语言学构造，Phorion捏他后颈让他闭嘴看。第二部的时候Phorion已经靠在Hesperon肩上睡着了。Hesperon没关投影，替他把毯子往上拉了拉。'},
-      {label:'衣品', text:'Hesperon推门进实验室，跟学生们打了个招呼就径直走向自己的位置。他走后身后安静了两秒，然后有人小声说，老师最近是不是换风格了。另一个人说，何止换风格，那件外套的剪裁一看就不便宜。第三个人说，而且配色不像他自己会搭的。没有人敢问，但所有人都在偷偷猜同一件事。Hesperon对此一无所知，Phorion对此心知肚明。'},
+      {label:'新〇微博', text:`Phorion的小号叫'没头脑和不高兴'。<br>日常用途：给Médici骂上司的帖子点赞，截图，发给Hesperon，然后两个人各自在自己的位置上嘎嘎乐。`},
+      {label:'书房', text:'他们后来有了一张足够大的桌子。Hesperon那半边永远堆着文献和草稿纸，Phorion那半边干净得像没人用过。但商务风的签字笔经常出现在那堆草稿山里，星星图案的咖啡杯也总是不知不觉挪到空的那边。'},
+      {label:'看电影', text:'周末傍晚洗完澡窝进沙发，准备好零食和舒服的毯子，开始指〇王马拉松。从护戒使者团出发看到王者归来。Hesperon中途开始分析精灵语和古代魔文的构造异同，Phorion只是把焦糖海盐爆米花塞进他的嘴里。第二部的时候Phorion已经靠在Hesperon肩上睡着了。Hesperon没关投影，替他把毯子往上拉了拉。'},
+      {label:'衣品', text:'Hesperon推门进实验室，跟学生们打了个招呼就径直走向自己的位置。他走后身后安静了两秒，然后有人小声说，老师最近是不是换风格了；另一个人说，何止换风格，那件外套的剪裁一看就不便宜；第三个人说，而且配色不像他自己会搭的。没有人敢问，但所有人都在偷偷猜同一件事。Hesperon对此一无所知，Phorion对此心知肚明。'},
     ],
   }
 };
@@ -1377,7 +1399,7 @@ function renderChar(c) {
   document.getElementById('char-index-label').textContent = c.index;
   document.getElementById('char-name').textContent = c.name;
   document.getElementById('char-name-alt').textContent = c.nameAlt;
-  document.getElementById('char-tagline').textContent = c.tagline;
+  document.getElementById('char-tagline').innerHTML = c.tagline;
   document.getElementById('char-accent-line').style.background = c.accent;
 
   // Stats
@@ -1581,7 +1603,7 @@ const NET_LINKS = [
     from:0, to:1, show:true,
     label:'伴侣',
     fromText:'让我的世界重新变得真实',
-    toText:'唯一能让我可以停下来',
+    toText:'唯一能让我可以停下来的',
   },
   // Phorion(0) ↔ Pieuvre(2)
   {
@@ -1638,7 +1660,7 @@ const NET_LINKS = [
   {
     from:2, to:4, show:true,
     label:'债务关系',
-    fromText:'感觉很能折腾的怪人',
+    fromText:'很能折腾的家伙',
     toText:'冤亲债主',
 	offset: 150,
   },
