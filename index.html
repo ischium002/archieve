@@ -84,8 +84,20 @@ body {
   transition: color 0.2s;
   border-bottom: 1px solid transparent;
   padding-bottom: 2px;
+  text-decoration: none;
 }
 .nav-link:hover, .nav-link.active { color: var(--ink); border-bottom-color: var(--ink); }
+.nav-sep {
+  width: 1px; height: 0.75rem;
+  background: var(--rule);
+  align-self: center;
+}
+.nav-link-out {
+  font-size: 0.55rem;
+  opacity: 0.6;
+  margin-left: 0.25rem;
+  vertical-align: 1px;
+}
 
 /* ═══════════════════════════════════════════
    PAGES WRAPPER
@@ -720,6 +732,109 @@ body {
   text-align: center;
 }
 
+/* ── networking links (click → drawer) ── */
+.net-link-line { stroke: var(--rule); stroke-width: 1; pointer-events: none; transition: stroke 0.2s; }
+.net-link-hit  { stroke: transparent; stroke-width: 18; fill: none; pointer-events: stroke; cursor: pointer; }
+.net-link-label, .net-link-labelbg { pointer-events: none; }
+.net-link-label { transition: fill 0.2s; }
+.net-link:hover .net-link-line  { stroke: var(--ink2); }
+.net-link:hover .net-link-label { fill: var(--ink); }
+.net-link.active .net-link-line  { stroke: var(--ink); stroke-width: 1.5; }
+.net-link.active .net-link-label { fill: var(--ink); font-weight: 500; }
+
+/* ── networking drawer ── */
+.net-drawer {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: 380px; max-width: 92vw;
+  background: var(--bg);
+  border-left: 1px solid var(--rule);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 100;
+  overflow-y: auto;
+  padding: 3.5rem 2.2rem 2.5rem;
+}
+.net-drawer.open { transform: translateX(0); box-shadow: -10px 0 28px rgba(40,30,15,0.07); }
+.net-drawer-close {
+  position: absolute; top: 1.1rem; right: 1.1rem;
+  background: none; border: 1px solid var(--ink);
+  width: 2rem; height: 2rem;
+  cursor: pointer;
+  color: var(--ink);
+  font-family: var(--mono); font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.net-drawer-close:hover { background: var(--ink); color: var(--bg); }
+
+.net-drawer-eyebrow {
+  font-family: var(--mono); font-size: 0.55rem;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--ink3); margin-bottom: 1.5rem;
+}
+
+.net-drawer-heads {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.8rem;
+}
+.net-drawer-head { text-align: center; }
+.net-drawer-head-img {
+  width: 4.5rem; height: 4.5rem;
+  margin: 0 auto 0.6rem;
+  border: 1px solid var(--rule);
+  background: var(--bg2);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.net-drawer-head-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.net-drawer-head-img-ph { font-size: 1.3rem; opacity: 0.25; color: var(--ink); }
+.net-drawer-head-accent { width: 70%; height: 2px; margin: 0 auto 0.4rem; }
+.net-drawer-head-name {
+  font-family: var(--serif); font-size: 0.85rem;
+  letter-spacing: 0.04em; color: var(--ink);
+}
+.net-drawer-arrow {
+  font-size: 1.1rem; color: var(--ink3);
+  padding: 0 0.3rem;
+}
+
+.net-drawer-label {
+  text-align: center;
+  padding: 1rem 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 2rem;
+}
+.net-drawer-label-eyebrow {
+  font-family: var(--mono); font-size: 0.5rem;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--ink3); margin-bottom: 0.3rem;
+}
+.net-drawer-label-text {
+  font-family: var(--serif); font-size: 1.05rem;
+  letter-spacing: 0.08em; color: var(--ink);
+}
+.net-drawer-label-text.empty { color: var(--ink3); font-style: italic; font-size: 0.85rem; letter-spacing: 0.04em; }
+
+.net-drawer-pov { margin-bottom: 1.8rem; }
+.net-drawer-pov-who {
+  font-family: var(--mono); font-size: 0.55rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ink3); margin-bottom: 0.6rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.net-drawer-pov-dot { width: 6px; height: 6px; flex-shrink: 0; }
+.net-drawer-pov-text {
+  font-family: var(--serif); font-style: italic;
+  font-size: 0.95rem; color: var(--ink2); line-height: 1.7;
+  padding-left: 0.85rem;
+  border-left: 1px solid var(--rule);
+}
+
 /* ── CP PLAYER ── */
 .cp-player {
   display: flex; align-items: center; gap: 2rem;
@@ -823,7 +938,9 @@ body {
   <div class="nav-links">
     <button class="nav-link active" id="nav-world" onclick="showPage('world')">Universe</button>
     <button class="nav-link" id="nav-chars" onclick="showPage('chars')">Characters</button>
-	<button class="nav-link" id="nav-networking" onclick="showPage('networking')">Networking</button>
+    <button class="nav-link" id="nav-networking" onclick="showPage('networking')">Networking</button>
+    <span class="nav-sep" aria-hidden="true"></span>
+    <a class="nav-link" href="https://ischium002.github.io/ph-timeline/" rel="noopener">Timeline<span class="nav-link-out">↗</span></a>
   </div>
 </nav>
 
@@ -1036,6 +1153,11 @@ body {
       <div id="net-nodes"></div>
     </div>
   </div>
+
+  <aside class="net-drawer" id="net-drawer" aria-hidden="true">
+    <button class="net-drawer-close" onclick="closeNetDrawer()" aria-label="Close">×</button>
+    <div id="net-drawer-content"></div>
+  </aside>
   <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
     <span class="back-to-top-inner">
       <span class="back-to-top-arrow">↑</span>
@@ -1407,6 +1529,7 @@ function showPage(id) {
   document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
   document.getElementById('nav-' + id).classList.add('active');
   window.scrollTo(0, 0);
+  if (typeof closeNetDrawer === 'function') closeNetDrawer();
   if (id === 'networking') renderNetworking();
 }
 
@@ -1655,74 +1778,71 @@ const NET_LINKS = [
   {
     from:0, to:1, show:true,
     label:'伴侣',
-    fromText:'完全能懂我',
-    toText:'令人安心的',
+    fromText:'令人安心的',
+    toText:'完全能懂我',
   },
   // Phorion(0) ↔ Pieuvre(2)
   {
     from:0, to:2, show:true,
-    label:'',
-    fromText:'有来头的大人物',
-    toText:'能放心的聪明人',
+    label:'某种同类',
+    fromText:'能放心的聪明人',
+    toText:'有来头的大人物',
   },
   // Phorion(0) ↔ Dul(3)
   {
     from:0, to:3, show:true,
-    label:'一面之缘',
-    fromText:'靠得住的人',
-    toText:'会好用的刀',
+    label:'对象的网友的对象',
+    fromText:'会好用的刀',
+    toText:'靠得住的人',
   },
   // Phorion(0) ↔ Médici(4)
   {
     from:0, to:4, show:true,
     label:'上下级',
-    fromText:'死老板死老板死老板',
-    toText:'我真得控制控制你了',
+    fromText:'我真得控制控制你了',
+    toText:'死老板死老板死老板',
   },
   // Hesperon(1) ↔ Pieuvre(2)
   {
     from:1, to:2, show:true,
     label:'网友',
-    fromText:'如预期的聪明',
-    toText:'有趣的观察者',
+    fromText:'有趣的观察者',
+    toText:'如预期的聪明',
   },
   // Hesperon(1) ↔ Dul(3)
   {
     from:1, to:3, show:true,
-    label:'网友的对象/对象的网友',
-    fromText:'出人意料的温和科学家',
-    toText:'数据和真人一致',
-	offset: 130,
+    label:'网友（间接版）',
+    fromText:'数据和真人一致',
+    toText:'出人意料的温和科学家',
   },
   // Hesperon(1) ↔ Médici(4)
   {
     from:1, to:4, show:true,
-    label:'',
-    fromText:'恐怖故事之老板娘是我长辈',
-    toText:'远房亲戚',
-	offset: 150,
+    label:'血亲（低浓度版）',
+    fromText:'远房亲戚',
+    toText:'恐怖故事之老板娘是我长辈',
   },
   // Pieuvre(2) ↔ Dul(3)
   {
     from:2, to:3, show:true,
     label:'恋人',
-    fromText:'最初留下的理由',
-    toText:'前研究对象兼现男友',
+    fromText:'前研究对象兼现男友',
+    toText:'最初留下的理由',
   },
   // Pieuvre(2) ↔ Médici(4)
   {
     from:2, to:4, show:true,
     label:'债务关系',
-    fromText:'虽然我们不说是好闺闺但我们就是好闺闺',
-    toText:'冤亲债主',
-	offset: 150,
+    fromText:'冤亲债主',
+    toText:'虽然我们不说是好闺闺但我们就是好闺闺',
   },
   // Dul(3) ↔ Médici(4)
   {
     from:3, to:4, show:true,
     label:'家族遗产',
-    fromText:'老辈子们留下来的还好不是赔本买卖',
-    toText:'？？？',
+    fromText:'？？？',
+    toText:'老辈子们留下来的还好不是赔本买卖',
   },
 ];
 
@@ -1753,7 +1873,8 @@ function renderNetworking() {
   `;
 
   // Draw links
-  NET_LINKS.forEach(link => {
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  NET_LINKS.forEach((link, idx) => {
     if (!link.show) return;
     const fromPos = NET_POSITIONS.find(p => p.charIdx === link.from);
     const toPos   = NET_POSITIONS.find(p => p.charIdx === link.to);
@@ -1763,93 +1884,61 @@ function renderNetworking() {
     const dx = toPos.x - fromPos.x;
     const dy = toPos.y - fromPos.y;
     const len = Math.sqrt(dx*dx + dy*dy);
-    // offset for labels (perpendicular)
-    const px = -dy/len * 18;
-    const py =  dx/len * 18;
 
-    // shorten line so arrows don't overlap nodes (node radius ~40px in viewBox)
     const offset = 52;
     const sx = fromPos.x + dx/len * offset;
     const sy = fromPos.y + dy/len * offset;
     const ex = toPos.x   - dx/len * offset;
     const ey = toPos.y   - dy/len * offset;
 
-    // line
-    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    const g = document.createElementNS(SVG_NS, 'g');
+    g.setAttribute('class', 'net-link');
+    g.setAttribute('data-link-idx', idx);
+
+    const line = document.createElementNS(SVG_NS, 'line');
+    line.setAttribute('class', 'net-link-line');
     line.setAttribute('x1', sx); line.setAttribute('y1', sy);
     line.setAttribute('x2', ex); line.setAttribute('y2', ey);
-    line.setAttribute('stroke','var(--rule)');
-    line.setAttribute('stroke-width','1');
-    line.setAttribute('marker-end','url(#arrow)');
-    line.setAttribute('marker-start','url(#arrow-start)');
-    svg.appendChild(line);
+    line.setAttribute('marker-end', 'url(#arrow)');
+    line.setAttribute('marker-start', 'url(#arrow-start)');
+    g.appendChild(line);
 
-    
+    if (link.label) {
+      const labelText = link.label;
+      const labelW = labelText.length * 12 + 12;
+      const labelBg = document.createElementNS(SVG_NS, 'rect');
+      labelBg.setAttribute('class', 'net-link-labelbg');
+      labelBg.setAttribute('x', mx - labelW/2);
+      labelBg.setAttribute('y', my - 9);
+      labelBg.setAttribute('width', labelW);
+      labelBg.setAttribute('height', 18);
+      labelBg.setAttribute('fill', '#f7f4ee');
+      g.appendChild(labelBg);
 
-    // 计算线的角度
-        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    
-        // 修正角度避免倒读
-            let textAngle = angle;
-            if (textAngle > 90) textAngle -= 180;
-            if (textAngle < -90) textAngle += 180;
-        
-            // fromText — 线的上方
-            const ft = document.createElementNS('http://www.w3.org/2000/svg','text');
-			const textOffset = link.offset || 110;
-			
-			const ftx = fromPos.x + dx/len * textOffset;
-			const fty = fromPos.y + dy/len * textOffset;
-            ft.setAttribute('x', ftx);
-            ft.setAttribute('y', fty);
-            ft.setAttribute('text-anchor', 'middle');
-            ft.setAttribute('font-family', 'Cormorant Garamond, serif');
-            ft.setAttribute('font-size', '12');
-            ft.setAttribute('font-style', 'italic');
-            ft.setAttribute('fill', 'var(--ink2)');
-            ft.setAttribute('transform', `rotate(${textAngle}, ${ftx}, ${fty})`);
-            ft.setAttribute('dy', '-8');
-            ft.textContent = link.fromText;
-            svg.appendChild(ft);
-        
-            // toText — 线的下方
-            const tt = document.createElementNS('http://www.w3.org/2000/svg','text');
-            const ttx = toPos.x - dx/len * textOffset;
-            const tty = toPos.y - dy/len * textOffset;
-            tt.setAttribute('x', ttx);
-            tt.setAttribute('y', tty);
-            tt.setAttribute('text-anchor', 'middle');
-            tt.setAttribute('font-family', 'Cormorant Garamond, serif');
-            tt.setAttribute('font-size', '12');
-            tt.setAttribute('font-style', 'italic');
-            tt.setAttribute('fill', 'var(--ink2)');
-            tt.setAttribute('transform', `rotate(${textAngle}, ${ttx}, ${tty})`);
-            tt.setAttribute('dy', '18');
-            tt.textContent = link.toText;
-            svg.appendChild(tt);
-			
-			// relation label — 线中央，带背景
-			    const labelBg = document.createElementNS('http://www.w3.org/2000/svg','rect');
-			    const labelText = link.label;
-			    const labelW = labelText.length * 7 + 16;
-			    labelBg.setAttribute('x', mx - labelW/2);
-			    labelBg.setAttribute('y', my - 10);
-			    labelBg.setAttribute('width', labelW);
-			    labelBg.setAttribute('height', 16);
-			    labelBg.setAttribute('fill', '#f7f4ee');
-			    svg.appendChild(labelBg);
-			
-			    const labelEl = document.createElementNS('http://www.w3.org/2000/svg','text');
-			    labelEl.setAttribute('x', mx);
-			    labelEl.setAttribute('y', my);
-			    labelEl.setAttribute('text-anchor','middle');
-			    labelEl.setAttribute('dominant-baseline','middle');
-			    labelEl.setAttribute('font-family','DM Mono, monospace');
-			    labelEl.setAttribute('font-size','11');
-			    labelEl.setAttribute('fill','var(--ink3)');
-			    labelEl.setAttribute('letter-spacing','1');
-			    labelEl.textContent = labelText;
-			    svg.appendChild(labelEl);
+      const labelEl = document.createElementNS(SVG_NS, 'text');
+      labelEl.setAttribute('class', 'net-link-label');
+      labelEl.setAttribute('x', mx);
+      labelEl.setAttribute('y', my);
+      labelEl.setAttribute('text-anchor', 'middle');
+      labelEl.setAttribute('dominant-baseline', 'middle');
+      labelEl.setAttribute('font-family', 'DM Mono, monospace');
+      labelEl.setAttribute('font-size', '11');
+      labelEl.setAttribute('fill', 'var(--ink3)');
+      labelEl.setAttribute('letter-spacing', '1');
+      labelEl.textContent = labelText;
+      g.appendChild(labelEl);
+    }
+
+    // click hit-area (last = on top so it captures pointer)
+    const hit = document.createElementNS(SVG_NS, 'line');
+    hit.setAttribute('class', 'net-link-hit');
+    hit.setAttribute('x1', fromPos.x); hit.setAttribute('y1', fromPos.y);
+    hit.setAttribute('x2', toPos.x);   hit.setAttribute('y2', toPos.y);
+    g.appendChild(hit);
+
+    g.addEventListener('click', () => openNetDrawer(idx));
+
+    svg.appendChild(g);
   });
 
   // Draw nodes (HTML overlay, positioned by %)
@@ -1878,6 +1967,78 @@ function renderNetworking() {
     nodesEl.appendChild(node);
   });
 }
+
+/* ─────────────────────────────────────
+   NETWORKING DRAWER
+───────────────────────────────────── */
+function openNetDrawer(idx) {
+  const link = NET_LINKS[idx];
+  if (!link) return;
+  const fromChar = CHARS[link.from];
+  const toChar   = CHARS[link.to];
+  const drawer = document.getElementById('net-drawer');
+  const content = document.getElementById('net-drawer-content');
+  if (!drawer || !content) return;
+
+  document.querySelectorAll('.net-link.active').forEach(el => el.classList.remove('active'));
+  const g = document.querySelector(`.net-link[data-link-idx="${idx}"]`);
+  if (g) g.classList.add('active');
+
+  const headHTML = (c) => `
+    <div class="net-drawer-head">
+      <div class="net-drawer-head-img">
+        ${c.image
+          ? `<img src="${c.image}" alt="${c.name}">`
+          : `<div class="net-drawer-head-img-ph">◈</div>`}
+      </div>
+      <div class="net-drawer-head-accent" style="background:${c.accentHex}"></div>
+      <div class="net-drawer-head-name">${c.name}</div>
+    </div>`;
+
+  content.innerHTML = `
+    <div class="net-drawer-eyebrow">Relationship · 关系详情</div>
+    <div class="net-drawer-heads">
+      ${headHTML(fromChar)}
+      <div class="net-drawer-arrow">↔</div>
+      ${headHTML(toChar)}
+    </div>
+    <div class="net-drawer-label">
+      <div class="net-drawer-label-eyebrow">Tag</div>
+      ${link.label
+        ? `<div class="net-drawer-label-text">${link.label}</div>`
+        : `<div class="net-drawer-label-text empty">未命名 / 待补</div>`}
+    </div>
+    <div class="net-drawer-pov">
+      <div class="net-drawer-pov-who">
+        <span class="net-drawer-pov-dot" style="background:${fromChar.accentHex}"></span>
+        ${fromChar.name} 视角
+      </div>
+      <div class="net-drawer-pov-text">${link.fromText || '—'}</div>
+    </div>
+    <div class="net-drawer-pov">
+      <div class="net-drawer-pov-who">
+        <span class="net-drawer-pov-dot" style="background:${toChar.accentHex}"></span>
+        ${toChar.name} 视角
+      </div>
+      <div class="net-drawer-pov-text">${link.toText || '—'}</div>
+    </div>
+  `;
+
+  drawer.classList.add('open');
+  drawer.setAttribute('aria-hidden', 'false');
+}
+
+function closeNetDrawer() {
+  const drawer = document.getElementById('net-drawer');
+  if (!drawer) return;
+  drawer.classList.remove('open');
+  drawer.setAttribute('aria-hidden', 'true');
+  document.querySelectorAll('.net-link.active').forEach(el => el.classList.remove('active'));
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeNetDrawer();
+});
 
 /* ─────────────────────────────────────
    INIT
