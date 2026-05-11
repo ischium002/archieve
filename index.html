@@ -940,7 +940,7 @@ body {
     <button class="nav-link" id="nav-chars" onclick="showPage('chars')">Characters</button>
     <button class="nav-link" id="nav-networking" onclick="showPage('networking')">Networking</button>
     <span class="nav-sep" aria-hidden="true"></span>
-    <a class="nav-link" href="https://ischium002.github.io/ph-timeline/" rel="noopener">Timeline<span class="nav-link-out">↗</span></a>
+    <a class="nav-link" href="./hub/">Timeline</a>
   </div>
 </nav>
 
@@ -1906,6 +1906,15 @@ function renderNetworking() {
     if (link.label) {
       const labelText = link.label;
       const labelW = labelText.length * 12 + 12;
+
+      // rotate label to follow line direction; flip 180° if it'd read upside down
+      let labelAngle = Math.atan2(dy, dx) * 180 / Math.PI;
+      if (labelAngle > 90)  labelAngle -= 180;
+      if (labelAngle < -90) labelAngle += 180;
+
+      const labelGroup = document.createElementNS(SVG_NS, 'g');
+      labelGroup.setAttribute('transform', `rotate(${labelAngle}, ${mx}, ${my})`);
+
       const labelBg = document.createElementNS(SVG_NS, 'rect');
       labelBg.setAttribute('class', 'net-link-labelbg');
       labelBg.setAttribute('x', mx - labelW/2);
@@ -1913,7 +1922,7 @@ function renderNetworking() {
       labelBg.setAttribute('width', labelW);
       labelBg.setAttribute('height', 18);
       labelBg.setAttribute('fill', '#f7f4ee');
-      g.appendChild(labelBg);
+      labelGroup.appendChild(labelBg);
 
       const labelEl = document.createElementNS(SVG_NS, 'text');
       labelEl.setAttribute('class', 'net-link-label');
@@ -1926,7 +1935,9 @@ function renderNetworking() {
       labelEl.setAttribute('fill', 'var(--ink3)');
       labelEl.setAttribute('letter-spacing', '1');
       labelEl.textContent = labelText;
-      g.appendChild(labelEl);
+      labelGroup.appendChild(labelEl);
+
+      g.appendChild(labelGroup);
     }
 
     // click hit-area (last = on top so it captures pointer)
