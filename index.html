@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ischium's Collection</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="https://res.cloudinary.com/dp5ayfo4z/image/upload/v1775668521/A5FB6ECA8E02B834821907C7618741E5_uzf777.png">
 <style>
@@ -51,6 +52,163 @@ body {
 }
 
 /* ═══════════════════════════════════════════
+   SPLASH — 扉页
+═══════════════════════════════════════════ */
+#splash {
+  position: fixed; inset: 0; z-index: 2000;
+  perspective: 1800px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+body.splash-lock { overflow: hidden; }
+.splash-sheet {
+  position: absolute; inset: 0;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transform-origin: left center;
+  transition: transform 1s cubic-bezier(.6,.05,.5,.4), opacity 1s ease;
+}
+#splash.open .splash-sheet {
+  transform: rotateY(-88deg);
+  opacity: 0;
+}
+.splash-frame {
+  position: absolute; inset: 1.5rem;
+  border: 1px solid var(--ink2);
+  pointer-events: none;
+}
+.splash-frame::before {
+  content: '';
+  position: absolute; inset: 7px;
+  border: 1px solid var(--rule);
+}
+.splash-stars {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+.splash-stars circle {
+  fill: var(--ink3);
+  opacity: 0;
+  animation: starIn 1s ease var(--d, 0s) forwards;
+}
+.splash-stars circle.tw {
+  animation: starIn 1s ease var(--d, 0s) forwards,
+             starTwinkle 5s ease-in-out calc(var(--d, 0s) + 2.5s) infinite;
+}
+.splash-stars line {
+  stroke: var(--ink3);
+  stroke-width: 1;
+  opacity: 0;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: lineDraw 1.3s ease var(--d, 0s) forwards;
+}
+@keyframes starIn {
+  to { opacity: var(--o, 0.7); }
+}
+@keyframes starTwinkle {
+  0%, 100% { opacity: var(--o, 0.7); }
+  50%      { opacity: calc(var(--o, 0.7) * 0.35); }
+}
+@keyframes lineDraw {
+  to { stroke-dashoffset: 0; opacity: 0.35; }
+}
+.splash-inner { position: relative; text-align: center; padding: 2rem; }
+.splash-exlibris {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.45em;
+  text-indent: 0.45em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 2.8rem;
+}
+.splash-title {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(2.6rem, 8vw, 5rem);
+  line-height: 1.12;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+.splash-title em { font-style: italic; color: var(--ink2); }
+.splash-orn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 1rem;
+  margin: 2.2rem auto;
+  color: var(--ink2);
+  font-size: 1.1rem;
+  font-family: 'Cormorant Garamond', 'Segoe UI Symbol', serif;
+}
+.splash-orn::before, .splash-orn::after {
+  content: ''; width: 3.5rem; height: 1px; background: var(--rule);
+}
+.splash-sub {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 300;
+  font-size: 1.05rem;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  color: var(--ink2);
+}
+.splash-hint {
+  position: absolute; bottom: 3.2rem; left: 0; right: 0;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: var(--ink3);
+}
+.splash-exlibris, .splash-title, .splash-orn, .splash-sub {
+  opacity: 0;
+  animation: splashIn 0.9s cubic-bezier(.4,0,.2,1) forwards;
+}
+.splash-title    { animation-delay: 0.15s; }
+.splash-orn      { animation-delay: 0.4s; }
+.splash-sub      { animation-delay: 0.55s; }
+.splash-hint {
+  opacity: 0;
+  animation: splashIn 0.9s 0.9s cubic-bezier(.4,0,.2,1) forwards,
+             splashHint 3s 2.2s ease-in-out infinite;
+}
+@keyframes splashIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes splashHint {
+  0%, 100% { opacity: 0.9; }
+  50%      { opacity: 0.35; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .splash-exlibris, .splash-title, .splash-orn, .splash-sub, .splash-hint {
+    animation: none; opacity: 1;
+  }
+  .splash-stars circle { animation: none; opacity: var(--o, 0.7); }
+  .splash-stars line { animation: none; opacity: 0.35; stroke-dashoffset: 0; }
+  .splash-sheet { transition: opacity 0.4s ease; }
+  #splash.open .splash-sheet { transform: none; }
+}
+@media (max-width: 600px) {
+  .splash-frame { inset: 0.8rem; }
+  .splash-inner { padding: 1.5rem; }
+  .splash-exlibris { margin-bottom: 2rem; }
+  .splash-orn { margin: 1.8rem auto; }
+  .splash-orn::before, .splash-orn::after { width: 2.4rem; }
+  .splash-sub { font-size: 0.95rem; letter-spacing: 0.3em; text-indent: 0.3em; }
+  .splash-hint { bottom: calc(1.8rem + env(safe-area-inset-bottom, 0px)); }
+}
+@media (max-height: 500px) {
+  /* 手机横屏 / 矮视口:压缩纵向间距防溢出 */
+  .splash-exlibris { margin-bottom: 1.2rem; }
+  .splash-title { font-size: clamp(1.8rem, 9vh, 3rem); }
+  .splash-orn { margin: 1rem auto; }
+  .splash-hint { bottom: 1rem; }
+}
+
+/* ═══════════════════════════════════════════
    GLOBAL NAV
 ═══════════════════════════════════════════ */
 .global-nav {
@@ -60,7 +218,6 @@ body {
   height: 3.5rem;
   background: var(--bg);
   border-bottom: 1px solid var(--rule);
-  backdrop-filter: blur(8px);
 }
 .nav-logo {
   font-family: var(--mono);
@@ -673,6 +830,16 @@ body {
 .mt1 { margin-top: 1rem; }
 .mt2 { margin-top: 2rem; }
 
+/* 隐藏剧透文字：hover 或点击显形（触屏没有 hover） */
+.spoiler {
+  background: var(--bg);
+  color: var(--bg);
+  cursor: pointer;
+  transition: color 0.3s;
+  padding: 0 2px;
+}
+.spoiler:hover, .spoiler.revealed { color: var(--ink2); }
+
 /* ═══════════════════════════════════════════
    NETWORKING PAGE
 ═══════════════════════════════════════════ */
@@ -1118,6 +1285,93 @@ body {
 </head>
 <body>
 
+<!-- ════════ SPLASH · 扉页 ════════ -->
+<div id="splash" role="button" tabindex="0" aria-label="翻开进入站点">
+  <div class="splash-sheet">
+    <div class="splash-frame"></div>
+    <svg class="splash-stars" aria-hidden="true">
+      <!-- 星群 A · 左上 -->
+      <line x1="12%" y1="22%" x2="21%" y2="14%" pathLength="1" style="--d:.9s"/>
+      <line x1="21%" y1="14%" x2="29%" y2="26%" pathLength="1" style="--d:1.2s"/>
+      <line x1="12%" y1="22%" x2="18%" y2="30%" pathLength="1" style="--d:1.5s"/>
+      <circle cx="12%" cy="22%" r="2"   style="--d:.4s;--o:.75"/>
+      <circle cx="21%" cy="14%" r="2.2" style="--d:.7s;--o:.8" class="tw"/>
+      <circle cx="29%" cy="26%" r="1.8" style="--d:1s;--o:.7"/>
+      <circle cx="18%" cy="30%" r="2"   style="--d:1.3s;--o:.75"/>
+      <!-- 星群 B · 右下 -->
+      <line x1="73%" y1="78%" x2="81%" y2="70%" pathLength="1" style="--d:1.3s"/>
+      <line x1="81%" y1="70%" x2="88%" y2="77%" pathLength="1" style="--d:1.6s"/>
+      <line x1="88%" y1="77%" x2="93%" y2="71%" pathLength="1" style="--d:1.9s"/>
+      <circle cx="73%" cy="78%" r="2"   style="--d:.8s;--o:.75"/>
+      <circle cx="81%" cy="70%" r="2.2" style="--d:1.1s;--o:.8" class="tw"/>
+      <circle cx="88%" cy="77%" r="1.8" style="--d:1.4s;--o:.7"/>
+      <circle cx="93%" cy="71%" r="1.6" style="--d:1.7s;--o:.7"/>
+      <!-- 星群 C · 右上(更淡) -->
+      <line x1="78%" y1="15%" x2="85%" y2="21%" pathLength="1" style="--d:2s"/>
+      <line x1="85%" y1="21%" x2="90%" y2="12%" pathLength="1" style="--d:2.2s"/>
+      <circle cx="78%" cy="15%" r="1.6" style="--d:1.6s;--o:.6"/>
+      <circle cx="85%" cy="21%" r="1.8" style="--d:1.8s;--o:.65"/>
+      <circle cx="90%" cy="12%" r="1.4" style="--d:2s;--o:.55" class="tw"/>
+      <!-- 星群 D · 左下 -->
+      <line x1="13%" y1="71%" x2="19%" y2="80%" pathLength="1" style="--d:2.3s"/>
+      <line x1="19%" y1="80%" x2="26%" y2="75%" pathLength="1" style="--d:2.5s"/>
+      <circle cx="13%" cy="71%" r="1.8" style="--d:1.9s;--o:.65"/>
+      <circle cx="19%" cy="80%" r="1.6" style="--d:2.1s;--o:.6"/>
+      <circle cx="26%" cy="75%" r="1.8" style="--d:2.3s;--o:.65"/>
+      <!-- 散星 -->
+      <circle cx="8%"  cy="10%" r="1.3" style="--d:.5s;--o:.45"/>
+      <circle cx="46%" cy="8%"  r="1.4" style="--d:.6s;--o:.5"/>
+      <circle cx="63%" cy="10%" r="1.2" style="--d:1s;--o:.45" class="tw"/>
+      <circle cx="7%"  cy="46%" r="1.4" style="--d:1.4s;--o:.5"/>
+      <circle cx="94%" cy="44%" r="1.3" style="--d:1.2s;--o:.45"/>
+      <circle cx="5%"  cy="88%" r="1.4" style="--d:1.8s;--o:.5" class="tw"/>
+      <circle cx="31%" cy="88%" r="1.2" style="--d:2.2s;--o:.45"/>
+      <circle cx="70%" cy="88%" r="1.4" style="--d:2s;--o:.5"/>
+      <circle cx="95%" cy="60%" r="1.2" style="--d:2.4s;--o:.4"/>
+      <circle cx="55%" cy="6%"  r="1.2" style="--d:2.6s;--o:.4"/>
+      <circle cx="86%" cy="33%" r="1.3" style="--d:2.8s;--o:.45"/>
+	  <!-- 
+         位置(百分比)   大小px    --d 何时浮现 --o 亮度   加tw=会眨眼
+		加星 = 复制一行改坐标;连星 = 加一根 <line x1 y1 x2 y2>(填两端星的坐标,--d 设得比两颗星都晚);嫌密 = 删行。-->
+    </svg>
+    <div class="splash-inner">
+      <div class="splash-exlibris">Ex Libris</div>
+      <div class="splash-title">Ischium's<br><em>Collection</em></div>
+      <div class="splash-orn">❦</div>
+      <div class="splash-sub">坐骨的OC们</div>
+    </div>
+    <div class="splash-hint"> OPEN</div>
+  </div>
+</div>
+<script>
+(function(){
+  var s = document.getElementById('splash');
+  try {
+    if (sessionStorage.getItem('ic-splash')) { s.remove(); return; }
+  } catch(e){}
+  document.body.classList.add('splash-lock');
+  var opened = false;
+  function open(){
+    if (opened) return;
+    opened = true;
+    try { sessionStorage.setItem('ic-splash','1'); } catch(e){}
+    s.classList.add('open');
+    var done = function(){
+      if (s.parentNode) s.remove();
+      document.body.classList.remove('splash-lock');
+    };
+    s.querySelector('.splash-sheet').addEventListener('transitionend', done, { once:true });
+    setTimeout(done, 1300);
+  }
+  s.addEventListener('click', open);
+  s.addEventListener('touchmove', function(e){ e.preventDefault(); }, { passive: false });
+  s.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+  });
+  s.focus();
+})();
+</script>
+
 <!-- ════════ GLOBAL NAV ════════ -->
 <nav class="global-nav">
   <button class="nav-logo" onclick="showPage('world')">ARCHIVE</button>
@@ -1138,7 +1392,7 @@ body {
   <div class="world-hero">
     <div class="world-hero-left">
       <div class="world-hero-label">Post-War Universe · 战后重建时代</div>
-      <h1 class="world-hero-title"style="font-weight:bold;">
+      <h1 class="world-hero-title" style="font-weight:bold;">
        
 	    <span style="font-size:0.50em;letter-spacing:0.12em;color:var(--ink2);display: block;">/科幻 × <em>魔法/</em></span>
 		 星际宇宙
@@ -1376,7 +1630,7 @@ const CHARS = [
       body:`<div class="mbti-type" style="color:#2b5c3f;">ENFJ <span class="mbti-sub" style="font-size:0.30em;">3w2</span></div>
 	  <p>他人缘好得有点反常。跟他合不来的人，要么不知不觉被推到了边缘，要么慢慢被他带着走。这不是阴谋，只是他在的地方，人群自然会重新排列。</p>
       <p>他身上有天然的感染力，能让人从心底觉得被理解、被接纳。与此同时，他对这段关系终将走向哪里，有着极其清醒的判断。真诚和算计在他身上同时运转，彼此相安无事。</p>
-      <p>他将情感的影响力用于长远的目标，并且完全清楚自己在做什么。为此他可以承受代价，也不会给自己的行为找一个漂亮的名头。<span style="background: var(--bg);color: var(--bg);cursor: pointer;transition: color 0.3s;padding: 0 2px;" onmouseover="this.style.color='var(--ink2)'"onmouseout="this.style.color='var(--bg)'">比如什么FOR THE GREATER GOOD</span><br>他只是接受这一切，然后继续。</p>
+      <p>他将情感的影响力用于长远的目标，并且完全清楚自己在做什么。为此他可以承受代价，也不会给自己的行为找一个漂亮的名头。<span class="spoiler">比如什么FOR THE GREATER GOOD</span><br>他只是接受这一切，然后继续。</p>
       <p>关系网络铺得很深很广，不会小觑任何人。平时从不高调，只在关键时刻一击必杀。</p>
       <p>价值排序：相方 &gt;&gt;&gt;&gt; 其他人。</p>
 	  <p><em>你的皮囊底下到底有几分真心？</em></p>`
@@ -1399,7 +1653,7 @@ const CHARS = [
       num:'04', title:'歌单\nPlaylist',
       playlist:[
         {n:'01', title:'Sunsetz', artist:'Cigarettes After Sex', note:''},
-        {n:'02', title:'All Too Well(10 mintues’ Verson)', artist:'Taylor Swift', note:''},
+        {n:'02', title:'All Too Well (10 Minutes’ Version)', artist:'Taylor Swift', note:''},
         {n:'03', title:'Work Song', artist:'Hozier', note:''},
       ]
     },
@@ -1425,7 +1679,6 @@ const CHARS = [
 	      <div style="margin-top:1.5rem;display:flex;align-items:center;gap:1rem;border-top:1px solid var(--rule);padding-top:1.2rem;">
 	        <div style="width:2.5rem;height:3px;background:#2d5a3d;"></div>
 	        <span style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.18em;color:var(--ink3);text-transform:uppercase;">墨绿 · #2d5a3d</span>
-	      </div>
 	      </div>`
 	    },
   ],
@@ -1473,7 +1726,7 @@ const CHARS = [
       outfits:[
         {label:'制服 / Uniform', text:'研究所图书馆沿袭神学院传统，管理职能制服为牧师服形制，胸前挂有金银两个十字。本人研究过神学教义体系，只为满足好奇心。<br>如果让多种族杂居时代前的老古董看到一个长着角的人型生物穿着牧师服——你们这牧师合法吗？', img:''},
         {label:'日常 / Casual', text:'衬衫套圆领毛衣，配色低饱和，干净简单。最起码穿戴整齐，心情好的话会有搭配上的小巧思。<br>最近衣柜似乎满了很多。', img:''},
-		{label:'外出 / Uniform', text:'外出用法师袍', img:''},
+		{label:'外出 / Outing', text:'外出用法师袍', img:''},
       ]
     },
     {
@@ -1511,7 +1764,6 @@ const CHARS = [
       <div style="margin-top:1.5rem;display:flex;align-items:center;gap:1rem;border-top:1px solid var(--rule);padding-top:1.2rem;">
         <div style="width:2.5rem;height:3px;background:#5a8ab4;"></div>
         <span style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.18em;color:var(--ink3);text-transform:uppercase;">浅蓝 · #5a8ab4</span>
-      </div>
       </div>`
     },
   ],
@@ -1678,7 +1930,7 @@ const CP_DATA = {
         <p>起初是本能。不让任何人靠得太近，不让任何目光在Hesperon身上停留太久。他给自己找了个保护战略资产的理由，勉强说得过去。<br>中期开始在Hesperon不知情的地方，替他拔掉一些长在暗处的刺。危机之后，他不再费心给自己找理由了。他很清楚自己在做什么，并且毫无愧疚。
         <br>战后圈地密度比战时更高。</p>
         <p>但Phorion圈地的方式从来不是限制，对习惯于独自扛过所有人事阻力的一只Hesperon来说，这不是围栏，是屋檐。
-		<span style="background: var(--bg);color: var(--bg);cursor: pointer;transition: color 0.3s;padding: 0 2px;" onmouseover="this.style.color='var(--ink2)'"onmouseout="this.style.color='var(--bg)'">肉麻两公婆。</span></p>
+		<span class="spoiler">肉麻两公婆。</span></p>
         <div class="dialogue-block">
           <div class="dialogue-line">
             <strong>Hesperon</strong>
@@ -1693,7 +1945,6 @@ const CP_DATA = {
       },
     ],
     vignettes:[
-      {label:'新〇微博', text:`Phorion的小号叫'没头脑和不高兴'。<br>日常用途：给Médici骂上司的帖子点赞，截图，发给Hesperon，然后两个人各自在自己的位置上嘎嘎乐。`},
       {label:'书房', text:'他们后来有了一张足够大的桌子。Hesperon那半边永远堆着文献和草稿纸，Phorion那半边干净得像没人用过。但商务风的签字笔经常出现在那堆草稿山里，星星图案的咖啡杯也总是不知不觉挪到空的那边。'},
       {label:'看电影', text:'周末傍晚洗完澡窝进沙发，准备好零食和舒服的毯子，开始指〇王马拉松。从护戒使者团出发看到王者归来。Hesperon中途开始分析精灵语和古代魔文的构造异同，Phorion只是把焦糖海盐爆米花塞进他的嘴里。第二部的时候Phorion已经靠在Hesperon肩上睡着了。Hesperon没关投影，替他把毯子往上拉了拉。'},
       {label:'衣品', text:'Hesperon推门进实验室，跟学生们打了个招呼就径直走向自己的位置。他走后身后安静了两秒，然后有人小声说，老师最近是不是换风格了；另一个人说，何止换风格，那件外套的剪裁一看就不便宜；第三个人说，而且配色不像他自己会搭的。没有人敢问，但所有人都在偷偷猜同一件事。Hesperon对此一无所知，Phorion对此心知肚明。'},
@@ -1708,28 +1959,54 @@ let currentChar = 0;
 let currentTab = 'profile';
 
 /* ─────────────────────────────────────
-   PAGE SWITCHING
+   PAGE SWITCHING / HASH ROUTING
+   路由格式：#world / #networking / #chars/<id>
+   showPage/openChar 只负责写 hash，
+   真正的 DOM 切换统一走 applyRoute（刷新/前进后退/直接贴链接都能复原）
 ───────────────────────────────────── */
-function showPage(id) {
+function activatePage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
   document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
   document.getElementById('nav-' + id).classList.add('active');
-  window.scrollTo(0, 0);
-  if (typeof closeNetDrawer === 'function') closeNetDrawer();
+  closeNetDrawer();
   if (id === 'networking') renderNetworking();
 }
 
-function openChar(i) {
+function activateChar(i) {
   currentChar = i;
-  showPage('chars');
   renderChar(CHARS[i]);
   // Update selector buttons
   document.querySelectorAll('.char-selector-btn').forEach((b, idx) => {
     b.classList.toggle('active', idx === i);
   });
   showTab(currentTab);
+}
+
+function applyRoute() {
+  const [page, sub] = location.hash.slice(1).split('/');
+  if (page === 'chars') {
+    const idx = CHARS.findIndex(c => c.id === sub);
+    activatePage('chars');
+    activateChar(idx >= 0 ? idx : 0);
+  } else if (page === 'networking') {
+    activatePage('networking');
+  } else {
+    activatePage('world');
+  }
   window.scrollTo(0, 0);
+}
+
+function showPage(id) {
+  const route = id === 'chars' ? 'chars/' + CHARS[currentChar].id : id;
+  if (location.hash.slice(1) === route) return;
+  location.hash = route;
+}
+
+function openChar(i) {
+  const route = 'chars/' + CHARS[i].id;
+  if (location.hash.slice(1) === route) return;
+  location.hash = route;
 }
 
 /* ─────────────────────────────────────
@@ -1879,7 +2156,7 @@ function renderCP(charIdx) {
 	    <span class="cp-player-time" id="cp-time">0:00</span>
 	  </div>
 	  <audio id="cp-audio" ontimeupdate="updateProgress()" onended="resetPlayer()">
-  <source src="https://ischium002.github.io/archieve/mastermind.mp3" type="audio/mp4">
+  <source src="https://ischium002.github.io/archieve/mastermind.mp3" type="audio/mpeg">
 </audio>
 	</div>
 
@@ -2310,10 +2587,26 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeNetDrawer();
 });
 
+/* 点抽屉外部任意位置关闭（连线/列表项的点击是在开抽屉，跳过） */
+document.addEventListener('click', e => {
+  const drawer = document.getElementById('net-drawer');
+  if (!drawer || !drawer.classList.contains('open')) return;
+  if (drawer.contains(e.target)) return;
+  if (e.target.closest('.net-link, .net-list-rel')) return;
+  closeNetDrawer();
+});
+
+/* 剧透文字：点击切换显形（触屏没有 hover） */
+document.addEventListener('click', e => {
+  const sp = e.target.closest('.spoiler');
+  if (sp) sp.classList.toggle('revealed');
+});
+
 /* ─────────────────────────────────────
    INIT
 ───────────────────────────────────── */
-renderChar(CHARS[0]);
+window.addEventListener('hashchange', applyRoute);
+applyRoute();
 
 /* re-render networking on resize / orientation change (debounced) */
 let netResizeTimer = null;
