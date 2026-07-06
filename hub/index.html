@@ -15,177 +15,649 @@
 </head>
 <body>
 <div id="root"></div>
-<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-<script type="text/babel" data-presets="react">
-const { useState, useEffect } = React;
-
+<script src="./react.production.min.js"></script>
+<script src="./react-dom.production.min.js"></script>
+<!--
+  下面的 JS 是从同目录 hub.src.jsx 预编译来的(Babel 7, preset: react),不再依赖 CDN。
+  要改内容:改 hub.src.jsx,然后让 Claude 重新编译替换这段(不要直接改这里)。
+-->
+<script>
+const {
+  useState,
+  useEffect
+} = React;
 var C = {
-  bg: '#F5F0E8', ink: '#2C2520', inkMid: '#5C534A',
-  inkLight: '#8A7F73', inkFaint: '#C4BAB0', gold: '#C9A96E',
-  line: '#9E8B72', P: '#4D6356', H: '#5D6D7E',
-  Piv: '#6B7B9B', Dul: '#B85C3A', M: '#A4688B',
+  bg: '#F5F0E8',
+  ink: '#2C2520',
+  inkMid: '#5C534A',
+  inkLight: '#8A7F73',
+  inkFaint: '#C4BAB0',
+  gold: '#C9A96E',
+  line: '#9E8B72',
+  P: '#4D6356',
+  H: '#5D6D7E',
+  Piv: '#6B7B9B',
+  Dul: '#B85C3A',
+  M: '#A4688B'
 };
 var font = "'Cormorant Garamond', Palatino, Georgia, serif";
-
 var PH_URL = 'https://ischium002.github.io/ph-timeline/';
-
 function bH(pts) {
   var d = 'M' + pts[0].x + ',' + pts[0].y;
   for (var i = 1; i < pts.length; i++) {
-    var p = pts[i-1], c = pts[i], m = (p.x + c.x) / 2;
+    var p = pts[i - 1],
+      c = pts[i],
+      m = (p.x + c.x) / 2;
     d += ' C' + m + ',' + p.y + ' ' + m + ',' + c.y + ' ' + c.x + ',' + c.y;
   }
   return d;
 }
-
 function bV(pts) {
   var d = 'M' + pts[0].x + ',' + pts[0].y;
   for (var i = 1; i < pts.length; i++) {
-    var p = pts[i-1], c = pts[i], m = (p.y + c.y) / 2;
+    var p = pts[i - 1],
+      c = pts[i],
+      m = (p.y + c.y) / 2;
     d += ' C' + p.x + ',' + m + ' ' + c.x + ',' + m + ' ' + c.x + ',' + c.y;
   }
   return d;
 }
-
 function off(pts, dx, dy) {
-  return pts.map(function(p) { return { x: p.x + dx, y: p.y + dy }; });
+  return pts.map(function (p) {
+    return {
+      x: p.x + dx,
+      y: p.y + dy
+    };
+  });
 }
-
 function Hub() {
-  var st = useState(null), hov = st[0], setHov = st[1];
-  var s2 = useState(1200), vw = s2[0], setVw = s2[1];
-  var s3 = useState(700), vh = s3[0], setVh = s3[1];
-  var s4 = useState(false), port = s4[0], setPort = s4[1];
-  var s5 = useState(null), msg = s5[0], setMsg = s5[1];
-
-  useEffect(function() {
-    function u() { setVw(window.innerWidth); setVh(window.innerHeight); setPort(window.innerHeight > window.innerWidth * 1.1); }
-    u(); window.addEventListener('resize', u);
-    return function() { window.removeEventListener('resize', u); };
+  var st = useState(null),
+    hov = st[0],
+    setHov = st[1];
+  var s2 = useState(1200),
+    vw = s2[0],
+    setVw = s2[1];
+  var s3 = useState(700),
+    vh = s3[0],
+    setVh = s3[1];
+  var s4 = useState(false),
+    port = s4[0],
+    setPort = s4[1];
+  var s5 = useState(null),
+    msg = s5[0],
+    setMsg = s5[1];
+  useEffect(function () {
+    function u() {
+      setVw(window.innerWidth);
+      setVh(window.innerHeight);
+      setPort(window.innerHeight > window.innerWidth * 1.1);
+    }
+    u();
+    window.addEventListener('resize', u);
+    return function () {
+      window.removeEventListener('resize', u);
+    };
   }, []);
-
   function showMsg(text) {
     setMsg(text);
-    setTimeout(function() { setMsg(function(curr) { return curr === text ? null : curr; }); }, 2500);
+    setTimeout(function () {
+      setMsg(function (curr) {
+        return curr === text ? null : curr;
+      });
+    }, 2500);
   }
-
-  function goPH() { window.location.href = PH_URL; }
-  function comingPD() { showMsg('PD Chronicle · 敬请期待'); }
-  function comingM()  { showMsg('Médici 线 · 敬请期待'); }
-
-  var mx = vw / 2, my = vh / 2;
-
-  var phL = [
-    {x:-20, y:my-vh*0.22}, {x:vw*0.12, y:my-vh*0.12}, {x:vw*0.25, y:my-vh*0.18},
-    {x:vw*0.38, y:my+vh*0.04}, {x:mx, y:my}, {x:vw*0.62, y:my-vh*0.06},
-    {x:vw*0.78, y:my+vh*0.14}, {x:vw*0.88, y:my+vh*0.08}, {x:vw+20, y:my+vh*0.18}
-  ];
-  var pdL = [
-    {x:-20, y:my+vh*0.20}, {x:vw*0.10, y:my+vh*0.10}, {x:vw*0.22, y:my+vh*0.16},
-    {x:vw*0.37, y:my-vh*0.02}, {x:mx, y:my}, {x:vw*0.65, y:my+vh*0.08},
-    {x:vw*0.75, y:my-vh*0.15}, {x:vw*0.90, y:my-vh*0.10}, {x:vw+20, y:my-vh*0.22}
-  ];
-
+  function goPH() {
+    window.location.href = PH_URL;
+  }
+  function comingPD() {
+    showMsg('PD Chronicle · 敬请期待');
+  }
+  function comingM() {
+    showMsg('Médici 线 · 敬请期待');
+  }
+  var mx = vw / 2,
+    my = vh / 2;
+  var phL = [{
+    x: -20,
+    y: my - vh * 0.22
+  }, {
+    x: vw * 0.12,
+    y: my - vh * 0.12
+  }, {
+    x: vw * 0.25,
+    y: my - vh * 0.18
+  }, {
+    x: vw * 0.38,
+    y: my + vh * 0.04
+  }, {
+    x: mx,
+    y: my
+  }, {
+    x: vw * 0.62,
+    y: my - vh * 0.06
+  }, {
+    x: vw * 0.78,
+    y: my + vh * 0.14
+  }, {
+    x: vw * 0.88,
+    y: my + vh * 0.08
+  }, {
+    x: vw + 20,
+    y: my + vh * 0.18
+  }];
+  var pdL = [{
+    x: -20,
+    y: my + vh * 0.20
+  }, {
+    x: vw * 0.10,
+    y: my + vh * 0.10
+  }, {
+    x: vw * 0.22,
+    y: my + vh * 0.16
+  }, {
+    x: vw * 0.37,
+    y: my - vh * 0.02
+  }, {
+    x: mx,
+    y: my
+  }, {
+    x: vw * 0.65,
+    y: my + vh * 0.08
+  }, {
+    x: vw * 0.75,
+    y: my - vh * 0.15
+  }, {
+    x: vw * 0.90,
+    y: my - vh * 0.10
+  }, {
+    x: vw + 20,
+    y: my - vh * 0.22
+  }];
   var xa = vw * 0.28;
-  var phP = [
-    {x:mx-xa*0.75, y:-20}, {x:mx-xa*0.40, y:vh*0.12}, {x:mx-xa*0.60, y:vh*0.25},
-    {x:mx+xa*0.14, y:vh*0.38}, {x:mx, y:my}, {x:mx-xa*0.20, y:vh*0.62},
-    {x:mx+xa*0.48, y:vh*0.78}, {x:mx+xa*0.28, y:vh*0.88}, {x:mx+xa*0.62, y:vh+20}
-  ];
-  var pdP = [
-    {x:mx+xa*0.68, y:-20}, {x:mx+xa*0.34, y:vh*0.10}, {x:mx+xa*0.55, y:vh*0.22},
-    {x:mx-xa*0.07, y:vh*0.37}, {x:mx, y:my}, {x:mx+xa*0.28, y:vh*0.65},
-    {x:mx-xa*0.52, y:vh*0.75}, {x:mx-xa*0.34, y:vh*0.90}, {x:mx-xa*0.75, y:vh+20}
-  ];
-
+  var phP = [{
+    x: mx - xa * 0.75,
+    y: -20
+  }, {
+    x: mx - xa * 0.40,
+    y: vh * 0.12
+  }, {
+    x: mx - xa * 0.60,
+    y: vh * 0.25
+  }, {
+    x: mx + xa * 0.14,
+    y: vh * 0.38
+  }, {
+    x: mx,
+    y: my
+  }, {
+    x: mx - xa * 0.20,
+    y: vh * 0.62
+  }, {
+    x: mx + xa * 0.48,
+    y: vh * 0.78
+  }, {
+    x: mx + xa * 0.28,
+    y: vh * 0.88
+  }, {
+    x: mx + xa * 0.62,
+    y: vh + 20
+  }];
+  var pdP = [{
+    x: mx + xa * 0.68,
+    y: -20
+  }, {
+    x: mx + xa * 0.34,
+    y: vh * 0.10
+  }, {
+    x: mx + xa * 0.55,
+    y: vh * 0.22
+  }, {
+    x: mx - xa * 0.07,
+    y: vh * 0.37
+  }, {
+    x: mx,
+    y: my
+  }, {
+    x: mx + xa * 0.28,
+    y: vh * 0.65
+  }, {
+    x: mx - xa * 0.52,
+    y: vh * 0.75
+  }, {
+    x: mx - xa * 0.34,
+    y: vh * 0.90
+  }, {
+    x: mx - xa * 0.75,
+    y: vh + 20
+  }];
   var pts1 = port ? phP : phL;
   var pts2 = port ? pdP : pdL;
   var b = port ? bV : bH;
-
-  var ph1 = b(pts1), pd1 = b(pts2);
-  var ph2 = b(off(pts1, port?4:4, port?2:5));
-  var pd2 = b(off(pts2, port?-4:-4, port?-2:-5));
-
-  var phH = hov === 'ph', pdH = hov === 'pd', mH = hov === 'm';
-  var pL = port ? {x:mx, y:vh*0.20} : {x:vw*0.20, y:my-vh*0.18};
-  var dL = port ? {x:mx, y:vh*0.80} : {x:vw*0.80, y:my-vh*0.16};
-
-  return (
-    <div>
-      <style>{[
-        "* { margin:0; padding:0; box-sizing:border-box; }",
-        "body { overflow:hidden; }",
-        ".hub { width:100vw; height:100vh; overflow:hidden; background:radial-gradient(ellipse at 25% 40%,rgba(201,169,110,0.06),transparent 50%),radial-gradient(ellipse at 75% 60%,rgba(164,104,139,0.025),transparent 45%)," + C.bg + "; font-family:" + font + "; color:" + C.ink + "; position:relative; }",
-        ".nav-back { position:absolute; top:22px; right:36px; font-family:" + font + "; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:" + C.inkLight + "; text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px; transition:color 0.2s, border-color 0.2s; z-index:5; }",
-        ".nav-back:hover { color:" + C.ink + "; border-bottom-color:" + C.ink + "; }",
-        ".msg-toast { position:absolute; left:50%; bottom:48px; transform:translateX(-50%); padding:0.6rem 1.4rem; border:1px solid " + C.line + "; background:" + C.bg + "; font-family:" + font + "; font-size:12px; letter-spacing:0.18em; color:" + C.inkMid + "; animation:toastIn 0.3s ease both; z-index:10; }",
-        "@keyframes toastIn{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}",
-        "@keyframes fadeIn{from{opacity:0}to{opacity:1}}",
-        "@keyframes drawSlow{from{stroke-dashoffset:3000}to{stroke-dashoffset:0}}",
-        "@keyframes breathe{0%,100%{opacity:0.2}50%{opacity:0.5}}"
-      ].join('\n')}</style>
-
-      <div className="hub">
-        <a className="nav-back" href="../">← ARCHIVE</a>
-
-        <svg width="100%" height="100%" style={{position:'absolute',top:0,left:0,pointerEvents:'none',mixBlendMode:'multiply',opacity:0.3}}>
-          <defs><filter id="hm"><feTurbulence type="fractalNoise" baseFrequency="0.013 0.009" numOctaves={4} seed={9} stitchTiles="stitch" result="n"/><feColorMatrix type="saturate" values="0" in="n" result="g"/><feComponentTransfer in="g"><feFuncA type="linear" slope="0.45" intercept="0"/></feComponentTransfer><feGaussianBlur stdDeviation="1.2"/></filter></defs>
-          <rect width="100%" height="100%" filter="url(#hm)" fill="#C4BAB0"/>
-        </svg>
-
-        <svg width={vw} height={vh} style={{position:'absolute',top:0,left:0}}>
-          <defs>
-            <filter id="hw"><feTurbulence type="fractalNoise" baseFrequency="0.014" numOctaves={3} seed={4} result="w"/><feDisplacementMap in="SourceGraphic" in2="w" scale={35} xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur stdDeviation={20}/></filter>
-            <radialGradient id="g1" cx="50%" cy="50%" r="50%"><stop offset="0%" stopColor={C.gold} stopOpacity="0.055"/><stop offset="100%" stopColor={C.gold} stopOpacity="0"/></radialGradient>
-            <radialGradient id="g2" cx="50%" cy="50%" r="50%"><stop offset="0%" stopColor="#8A8B82" stopOpacity="0.035"/><stop offset="100%" stopColor="#8A8B82" stopOpacity="0"/></radialGradient>
-          </defs>
-
-          {port ? (
-            <g><ellipse cx={mx} cy={vh*0.22} rx={vw*0.2} ry={vh*0.08} fill="url(#g2)" filter="url(#hw)"/><ellipse cx={mx} cy={vh*0.78} rx={vw*0.2} ry={vh*0.08} fill="url(#g2)" filter="url(#hw)"/><ellipse cx={mx} cy={my} rx={vw*0.12} ry={vh*0.06} fill="url(#g1)" filter="url(#hw)"/></g>
-          ) : (
-            <g><ellipse cx={vw*0.22} cy={my-vh*0.1} rx={vw*0.12} ry={vh*0.15} fill="url(#g2)" filter="url(#hw)"/><ellipse cx={vw*0.78} cy={my+vh*0.08} rx={vw*0.13} ry={vh*0.14} fill="url(#g2)" filter="url(#hw)"/><ellipse cx={mx} cy={my} rx={vw*0.09} ry={vh*0.11} fill="url(#g1)" filter="url(#hw)"/></g>
-          )}
-
-          <path d={ph1} stroke="transparent" fill="none" strokeWidth={36} style={{cursor:'pointer'}} onMouseEnter={function(){setHov('ph')}} onMouseLeave={function(){setHov(null)}} onClick={goPH}/>
-          <path d={ph1} stroke={C.P} fill="none" strokeWidth={phH?10:5} opacity={phH?0.1:0.04} style={{transition:'all 0.5s',pointerEvents:'none'}}/>
-          <path d={ph1} fill="none" strokeLinecap="round" stroke={phH?C.inkMid:C.line} strokeWidth={phH?2:1.4} opacity={phH?0.85:0.4} strokeDasharray={3000} style={{animation:'drawSlow 2.5s ease 0.2s both',transition:'stroke 0.4s,opacity 0.4s,stroke-width 0.4s',pointerEvents:'none'}}/>
-          <path d={ph2} fill="none" strokeLinecap="round" stroke={C.H} strokeWidth={0.8} opacity={phH?0.45:0.15} strokeDasharray={3000} style={{animation:'drawSlow 2.8s ease 0.4s both',transition:'opacity 0.4s',pointerEvents:'none'}}/>
-
-          <path d={pd1} stroke="transparent" fill="none" strokeWidth={36} style={{cursor:'pointer'}} onMouseEnter={function(){setHov('pd')}} onMouseLeave={function(){setHov(null)}} onClick={comingPD}/>
-          <path d={pd1} stroke={C.Dul} fill="none" strokeWidth={pdH?10:5} opacity={pdH?0.08:0.03} style={{transition:'all 0.5s',pointerEvents:'none'}}/>
-          <path d={pd1} fill="none" strokeLinecap="round" stroke={pdH?C.inkMid:C.line} strokeWidth={pdH?2:1.4} opacity={pdH?0.85:0.4} strokeDasharray={3000} style={{animation:'drawSlow 2.5s ease 0.5s both',transition:'stroke 0.4s,opacity 0.4s,stroke-width 0.4s',pointerEvents:'none'}}/>
-          <path d={pd2} fill="none" strokeLinecap="round" stroke={C.Piv} strokeWidth={0.8} opacity={pdH?0.4:0.13} strokeDasharray={3000} style={{animation:'drawSlow 2.8s ease 0.7s both',transition:'opacity 0.4s',pointerEvents:'none'}}/>
-
-          <circle cx={mx} cy={my} r={30} fill="transparent" style={{cursor:'pointer'}} onMouseEnter={function(){setHov('m')}} onMouseLeave={function(){setHov(null)}} onClick={comingM}/>
-          <circle cx={mx} cy={my} r={mH?14:10} fill="none" stroke={C.M} strokeWidth={0.7} opacity={mH?0.55:0.2} style={{transition:'all 0.4s',animation:'breathe 4s ease infinite',pointerEvents:'none'}}/>
-          <circle cx={mx} cy={my} r={mH?3.5:2.5} fill={mH?C.M:C.line} style={{transition:'all 0.3s',pointerEvents:'none'}}/>
-
-          <text x={pL.x} y={pL.y} textAnchor="middle" dominantBaseline="middle" fill={phH?C.ink:C.inkMid} fontSize={port?20:23} fontWeight={300} letterSpacing="0.04em" style={{fontFamily:font,transition:'fill 0.3s,opacity 0.3s',opacity:phH?1:0.65,cursor:'pointer',animation:'fadeIn 0.6s ease 0.8s both'}} onMouseEnter={function(){setHov('ph')}} onMouseLeave={function(){setHov(null)}} onClick={goPH}>Phorion x Hesperon</text>
-          <text x={pL.x} y={pL.y+24} textAnchor="middle" dominantBaseline="middle" fill={C.inkLight} fontSize={12} fontStyle="italic" fontWeight={300} style={{fontFamily:font,opacity:phH?0.75:0.35,transition:'opacity 0.3s',animation:'fadeIn 0.6s ease 1s both'}}>morning star and evening star</text>
-
-          <text x={dL.x} y={dL.y} textAnchor="middle" dominantBaseline="middle" fill={pdH?C.ink:C.inkMid} fontSize={port?20:23} fontWeight={300} letterSpacing="0.04em" style={{fontFamily:font,transition:'fill 0.3s,opacity 0.3s',opacity:pdH?1:0.65,cursor:'pointer',animation:'fadeIn 0.6s ease 0.9s both'}} onMouseEnter={function(){setHov('pd')}} onMouseLeave={function(){setHov(null)}} onClick={comingPD}>Pieuvre x Dul</text>
-          <text x={dL.x} y={dL.y+24} textAnchor="middle" dominantBaseline="middle" fill={C.inkLight} fontSize={12} fontStyle="italic" fontWeight={300} style={{fontFamily:font,opacity:pdH?0.75:0.35,transition:'opacity 0.3s',animation:'fadeIn 0.6s ease 1.1s both'}}>silver coin and flame</text>
-
-          {mH && <g style={{pointerEvents:'none'}}>
-            <text x={mx} y={my-26} textAnchor="middle" dominantBaseline="middle" fill={C.M} fontSize={14} fontStyle="italic" fontWeight={400} letterSpacing="0.06em" style={{fontFamily:font,animation:'fadeIn 0.2s ease'}}>Medici</text>
-            <text x={mx} y={my-10} textAnchor="middle" dominantBaseline="middle" fill={C.inkLight} fontSize={11} fontStyle="italic" fontWeight={300} style={{fontFamily:font,animation:'fadeIn 0.2s ease 0.05s both'}}>the one who connects everything</text>
-          </g>}
-        </svg>
-
-        <div style={{position:'absolute',top:24,width:'100%',textAlign:'center',animation:'fadeIn 0.8s ease 1.2s both',pointerEvents:'none'}}>
-          <span style={{fontSize:11,letterSpacing:'0.2em',textTransform:'uppercase',color:C.inkFaint,fontWeight:400,fontFamily:font}}>Timeline</span>
-        </div>
-
-        {msg && <div className="msg-toast">{msg}</div>}
-      </div>
-    </div>
-  );
+  var ph1 = b(pts1),
+    pd1 = b(pts2);
+  var ph2 = b(off(pts1, port ? 4 : 4, port ? 2 : 5));
+  var pd2 = b(off(pts2, port ? -4 : -4, port ? -2 : -5));
+  var phH = hov === 'ph',
+    pdH = hov === 'pd',
+    mH = hov === 'm';
+  var pL = port ? {
+    x: mx,
+    y: vh * 0.20
+  } : {
+    x: vw * 0.20,
+    y: my - vh * 0.18
+  };
+  var dL = port ? {
+    x: mx,
+    y: vh * 0.80
+  } : {
+    x: vw * 0.80,
+    y: my - vh * 0.16
+  };
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("style", null, ["* { margin:0; padding:0; box-sizing:border-box; }", "body { overflow:hidden; }", ".hub { width:100vw; height:100vh; overflow:hidden; background:radial-gradient(ellipse at 25% 40%,rgba(201,169,110,0.06),transparent 50%),radial-gradient(ellipse at 75% 60%,rgba(164,104,139,0.025),transparent 45%)," + C.bg + "; font-family:" + font + "; color:" + C.ink + "; position:relative; }", ".nav-back { position:absolute; top:22px; right:36px; font-family:" + font + "; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:" + C.inkLight + "; text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px; transition:color 0.2s, border-color 0.2s; z-index:5; }", ".nav-back:hover { color:" + C.ink + "; border-bottom-color:" + C.ink + "; }", ".msg-toast { position:absolute; left:50%; bottom:48px; transform:translateX(-50%); padding:0.6rem 1.4rem; border:1px solid " + C.line + "; background:" + C.bg + "; font-family:" + font + "; font-size:12px; letter-spacing:0.18em; color:" + C.inkMid + "; animation:toastIn 0.3s ease both; z-index:10; }", "@keyframes toastIn{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}", "@keyframes fadeIn{from{opacity:0}to{opacity:1}}", "@keyframes drawSlow{from{stroke-dashoffset:3000}to{stroke-dashoffset:0}}", "@keyframes breathe{0%,100%{opacity:0.2}50%{opacity:0.5}}"].join('\n')), /*#__PURE__*/React.createElement("div", {
+    className: "hub"
+  }, /*#__PURE__*/React.createElement("a", {
+    className: "nav-back",
+    href: "../"
+  }, "\u2190 ARCHIVE"), /*#__PURE__*/React.createElement("svg", {
+    width: "100%",
+    height: "100%",
+    style: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      pointerEvents: 'none',
+      mixBlendMode: 'multiply',
+      opacity: 0.3
+    }
+  }, /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("filter", {
+    id: "hm"
+  }, /*#__PURE__*/React.createElement("feTurbulence", {
+    type: "fractalNoise",
+    baseFrequency: "0.013 0.009",
+    numOctaves: 4,
+    seed: 9,
+    stitchTiles: "stitch",
+    result: "n"
+  }), /*#__PURE__*/React.createElement("feColorMatrix", {
+    type: "saturate",
+    values: "0",
+    in: "n",
+    result: "g"
+  }), /*#__PURE__*/React.createElement("feComponentTransfer", {
+    in: "g"
+  }, /*#__PURE__*/React.createElement("feFuncA", {
+    type: "linear",
+    slope: "0.45",
+    intercept: "0"
+  })), /*#__PURE__*/React.createElement("feGaussianBlur", {
+    stdDeviation: "1.2"
+  }))), /*#__PURE__*/React.createElement("rect", {
+    width: "100%",
+    height: "100%",
+    filter: "url(#hm)",
+    fill: "#C4BAB0"
+  })), /*#__PURE__*/React.createElement("svg", {
+    width: vw,
+    height: vh,
+    style: {
+      position: 'absolute',
+      top: 0,
+      left: 0
+    }
+  }, /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("filter", {
+    id: "hw"
+  }, /*#__PURE__*/React.createElement("feTurbulence", {
+    type: "fractalNoise",
+    baseFrequency: "0.014",
+    numOctaves: 3,
+    seed: 4,
+    result: "w"
+  }), /*#__PURE__*/React.createElement("feDisplacementMap", {
+    in: "SourceGraphic",
+    in2: "w",
+    scale: 35,
+    xChannelSelector: "R",
+    yChannelSelector: "G"
+  }), /*#__PURE__*/React.createElement("feGaussianBlur", {
+    stdDeviation: 20
+  })), /*#__PURE__*/React.createElement("radialGradient", {
+    id: "g1",
+    cx: "50%",
+    cy: "50%",
+    r: "50%"
+  }, /*#__PURE__*/React.createElement("stop", {
+    offset: "0%",
+    stopColor: C.gold,
+    stopOpacity: "0.055"
+  }), /*#__PURE__*/React.createElement("stop", {
+    offset: "100%",
+    stopColor: C.gold,
+    stopOpacity: "0"
+  })), /*#__PURE__*/React.createElement("radialGradient", {
+    id: "g2",
+    cx: "50%",
+    cy: "50%",
+    r: "50%"
+  }, /*#__PURE__*/React.createElement("stop", {
+    offset: "0%",
+    stopColor: "#8A8B82",
+    stopOpacity: "0.035"
+  }), /*#__PURE__*/React.createElement("stop", {
+    offset: "100%",
+    stopColor: "#8A8B82",
+    stopOpacity: "0"
+  }))), port ? /*#__PURE__*/React.createElement("g", null, /*#__PURE__*/React.createElement("ellipse", {
+    cx: mx,
+    cy: vh * 0.22,
+    rx: vw * 0.2,
+    ry: vh * 0.08,
+    fill: "url(#g2)",
+    filter: "url(#hw)"
+  }), /*#__PURE__*/React.createElement("ellipse", {
+    cx: mx,
+    cy: vh * 0.78,
+    rx: vw * 0.2,
+    ry: vh * 0.08,
+    fill: "url(#g2)",
+    filter: "url(#hw)"
+  }), /*#__PURE__*/React.createElement("ellipse", {
+    cx: mx,
+    cy: my,
+    rx: vw * 0.12,
+    ry: vh * 0.06,
+    fill: "url(#g1)",
+    filter: "url(#hw)"
+  })) : /*#__PURE__*/React.createElement("g", null, /*#__PURE__*/React.createElement("ellipse", {
+    cx: vw * 0.22,
+    cy: my - vh * 0.1,
+    rx: vw * 0.12,
+    ry: vh * 0.15,
+    fill: "url(#g2)",
+    filter: "url(#hw)"
+  }), /*#__PURE__*/React.createElement("ellipse", {
+    cx: vw * 0.78,
+    cy: my + vh * 0.08,
+    rx: vw * 0.13,
+    ry: vh * 0.14,
+    fill: "url(#g2)",
+    filter: "url(#hw)"
+  }), /*#__PURE__*/React.createElement("ellipse", {
+    cx: mx,
+    cy: my,
+    rx: vw * 0.09,
+    ry: vh * 0.11,
+    fill: "url(#g1)",
+    filter: "url(#hw)"
+  })), /*#__PURE__*/React.createElement("path", {
+    d: ph1,
+    stroke: "transparent",
+    fill: "none",
+    strokeWidth: 36,
+    style: {
+      cursor: 'pointer'
+    },
+    onMouseEnter: function () {
+      setHov('ph');
+    },
+    onMouseLeave: function () {
+      setHov(null);
+    },
+    onClick: goPH
+  }), /*#__PURE__*/React.createElement("path", {
+    d: ph1,
+    stroke: C.P,
+    fill: "none",
+    strokeWidth: phH ? 10 : 5,
+    opacity: phH ? 0.1 : 0.04,
+    style: {
+      transition: 'all 0.5s',
+      pointerEvents: 'none'
+    }
+  }), /*#__PURE__*/React.createElement("path", {
+    d: ph1,
+    fill: "none",
+    strokeLinecap: "round",
+    stroke: phH ? C.inkMid : C.line,
+    strokeWidth: phH ? 2 : 1.4,
+    opacity: phH ? 0.85 : 0.4,
+    strokeDasharray: 3000,
+    style: {
+      animation: 'drawSlow 2.5s ease 0.2s both',
+      transition: 'stroke 0.4s,opacity 0.4s,stroke-width 0.4s',
+      pointerEvents: 'none'
+    }
+  }), /*#__PURE__*/React.createElement("path", {
+    d: ph2,
+    fill: "none",
+    strokeLinecap: "round",
+    stroke: C.H,
+    strokeWidth: 0.8,
+    opacity: phH ? 0.45 : 0.15,
+    strokeDasharray: 3000,
+    style: {
+      animation: 'drawSlow 2.8s ease 0.4s both',
+      transition: 'opacity 0.4s',
+      pointerEvents: 'none'
+    }
+  }), /*#__PURE__*/React.createElement("path", {
+    d: pd1,
+    stroke: "transparent",
+    fill: "none",
+    strokeWidth: 36,
+    style: {
+      cursor: 'pointer'
+    },
+    onMouseEnter: function () {
+      setHov('pd');
+    },
+    onMouseLeave: function () {
+      setHov(null);
+    },
+    onClick: comingPD
+  }), /*#__PURE__*/React.createElement("path", {
+    d: pd1,
+    stroke: C.Dul,
+    fill: "none",
+    strokeWidth: pdH ? 10 : 5,
+    opacity: pdH ? 0.08 : 0.03,
+    style: {
+      transition: 'all 0.5s',
+      pointerEvents: 'none'
+    }
+  }), /*#__PURE__*/React.createElement("path", {
+    d: pd1,
+    fill: "none",
+    strokeLinecap: "round",
+    stroke: pdH ? C.inkMid : C.line,
+    strokeWidth: pdH ? 2 : 1.4,
+    opacity: pdH ? 0.85 : 0.4,
+    strokeDasharray: 3000,
+    style: {
+      animation: 'drawSlow 2.5s ease 0.5s both',
+      transition: 'stroke 0.4s,opacity 0.4s,stroke-width 0.4s',
+      pointerEvents: 'none'
+    }
+  }), /*#__PURE__*/React.createElement("path", {
+    d: pd2,
+    fill: "none",
+    strokeLinecap: "round",
+    stroke: C.Piv,
+    strokeWidth: 0.8,
+    opacity: pdH ? 0.4 : 0.13,
+    strokeDasharray: 3000,
+    style: {
+      animation: 'drawSlow 2.8s ease 0.7s both',
+      transition: 'opacity 0.4s',
+      pointerEvents: 'none'
+    }
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: mx,
+    cy: my,
+    r: 30,
+    fill: "transparent",
+    style: {
+      cursor: 'pointer'
+    },
+    onMouseEnter: function () {
+      setHov('m');
+    },
+    onMouseLeave: function () {
+      setHov(null);
+    },
+    onClick: comingM
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: mx,
+    cy: my,
+    r: mH ? 14 : 10,
+    fill: "none",
+    stroke: C.M,
+    strokeWidth: 0.7,
+    opacity: mH ? 0.55 : 0.2,
+    style: {
+      transition: 'all 0.4s',
+      animation: 'breathe 4s ease infinite',
+      pointerEvents: 'none'
+    }
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: mx,
+    cy: my,
+    r: mH ? 3.5 : 2.5,
+    fill: mH ? C.M : C.line,
+    style: {
+      transition: 'all 0.3s',
+      pointerEvents: 'none'
+    }
+  }), /*#__PURE__*/React.createElement("text", {
+    x: pL.x,
+    y: pL.y,
+    textAnchor: "middle",
+    dominantBaseline: "middle",
+    fill: phH ? C.ink : C.inkMid,
+    fontSize: port ? 20 : 23,
+    fontWeight: 300,
+    letterSpacing: "0.04em",
+    style: {
+      fontFamily: font,
+      transition: 'fill 0.3s,opacity 0.3s',
+      opacity: phH ? 1 : 0.65,
+      cursor: 'pointer',
+      animation: 'fadeIn 0.6s ease 0.8s both'
+    },
+    onMouseEnter: function () {
+      setHov('ph');
+    },
+    onMouseLeave: function () {
+      setHov(null);
+    },
+    onClick: goPH
+  }, "Phorion x Hesperon"), /*#__PURE__*/React.createElement("text", {
+    x: pL.x,
+    y: pL.y + 24,
+    textAnchor: "middle",
+    dominantBaseline: "middle",
+    fill: C.inkLight,
+    fontSize: 12,
+    fontStyle: "italic",
+    fontWeight: 300,
+    style: {
+      fontFamily: font,
+      opacity: phH ? 0.75 : 0.35,
+      transition: 'opacity 0.3s',
+      animation: 'fadeIn 0.6s ease 1s both'
+    }
+  }, "morning star and evening star"), /*#__PURE__*/React.createElement("text", {
+    x: dL.x,
+    y: dL.y,
+    textAnchor: "middle",
+    dominantBaseline: "middle",
+    fill: pdH ? C.ink : C.inkMid,
+    fontSize: port ? 20 : 23,
+    fontWeight: 300,
+    letterSpacing: "0.04em",
+    style: {
+      fontFamily: font,
+      transition: 'fill 0.3s,opacity 0.3s',
+      opacity: pdH ? 1 : 0.65,
+      cursor: 'pointer',
+      animation: 'fadeIn 0.6s ease 0.9s both'
+    },
+    onMouseEnter: function () {
+      setHov('pd');
+    },
+    onMouseLeave: function () {
+      setHov(null);
+    },
+    onClick: comingPD
+  }, "Pieuvre x Dul"), /*#__PURE__*/React.createElement("text", {
+    x: dL.x,
+    y: dL.y + 24,
+    textAnchor: "middle",
+    dominantBaseline: "middle",
+    fill: C.inkLight,
+    fontSize: 12,
+    fontStyle: "italic",
+    fontWeight: 300,
+    style: {
+      fontFamily: font,
+      opacity: pdH ? 0.75 : 0.35,
+      transition: 'opacity 0.3s',
+      animation: 'fadeIn 0.6s ease 1.1s both'
+    }
+  }, "silver coin and flame"), mH && /*#__PURE__*/React.createElement("g", {
+    style: {
+      pointerEvents: 'none'
+    }
+  }, /*#__PURE__*/React.createElement("text", {
+    x: mx,
+    y: my - 26,
+    textAnchor: "middle",
+    dominantBaseline: "middle",
+    fill: C.M,
+    fontSize: 14,
+    fontStyle: "italic",
+    fontWeight: 400,
+    letterSpacing: "0.06em",
+    style: {
+      fontFamily: font,
+      animation: 'fadeIn 0.2s ease'
+    }
+  }, "M\xE9dici"), /*#__PURE__*/React.createElement("text", {
+    x: mx,
+    y: my - 10,
+    textAnchor: "middle",
+    dominantBaseline: "middle",
+    fill: C.inkLight,
+    fontSize: 11,
+    fontStyle: "italic",
+    fontWeight: 300,
+    style: {
+      fontFamily: font,
+      animation: 'fadeIn 0.2s ease 0.05s both'
+    }
+  }, "the one who connects everything"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      top: 24,
+      width: '100%',
+      textAlign: 'center',
+      animation: 'fadeIn 0.8s ease 1.2s both',
+      pointerEvents: 'none'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      letterSpacing: '0.2em',
+      textTransform: 'uppercase',
+      color: C.inkFaint,
+      fontWeight: 400,
+      fontFamily: font
+    }
+  }, "Timeline")), msg && /*#__PURE__*/React.createElement("div", {
+    className: "msg-toast"
+  }, msg)));
 }
-
-ReactDOM.createRoot(document.getElementById('root')).render(<Hub />);
+ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(Hub, null));
 </script>
 </body>
 </html>
