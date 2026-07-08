@@ -517,12 +517,17 @@ body.splash-lock { overflow: hidden; }
   height: 1px; width: 3rem;
   margin-bottom: 2.5rem;
 }
-.char-tagline {
-  font-size: 1.2rem; font-weight: 400;
-  line-height: 1.7; letter-spacing: 0.01em;
-  color: var(--ink2); max-width: 40ch;
-  margin-bottom: 3rem;
-  font-style: italic;
+.char-impression {
+  margin-bottom: 2.2rem;
+}
+.char-impression-label {
+  font-family: var(--mono); font-size: 0.55rem;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink3); margin-bottom: 0.4rem;
+}
+.char-impression-text {
+  font-size: 1rem; color: var(--ink2);
+  line-height: 1.6;
 }
 .char-stats {
   display: grid; grid-template-columns: 1fr 1fr;
@@ -1210,7 +1215,7 @@ body.splash-lock { overflow: hidden; }
   .char-hero-img { min-height: 65vw; }
   .char-hero-text { padding: 2rem 1.2rem; }
   .char-hero-name-alt { margin-bottom: 1.5rem; }
-  .char-tagline { font-size: 1.05rem; margin-bottom: 2rem; }
+  .char-impression { margin-bottom: 1.5rem; }
   .char-stats { grid-template-columns: 1fr; }
   .char-stat { padding: 0.7rem 0; }
   .char-stat:nth-child(odd) { border-right: none; padding-right: 0; }
@@ -1543,7 +1548,7 @@ body.splash-lock { overflow: hidden; }
         <h2 class="char-hero-name" id="char-name"></h2>
         <div class="char-hero-name-alt" id="char-name-alt"></div>
         <div class="char-accent-line" id="char-accent-line"></div>
-        <p class="char-tagline" id="char-tagline"></p>
+        <div class="char-impression" id="char-impression"></div>
         <div class="char-stats" id="char-stats"></div>
       </div>
     </div>
@@ -1615,8 +1620,8 @@ const CHARS = [
 {
   id:'phorion', index:'01 / 05', name:'Phorion', nameAlt:'曦 — Phosphorus',
   accent:'var(--ph)', accentHex:'#2d5a3d',
-  tagline:`He walks into any room already knowing what everyone wants.<br>他推门而入的那一刻，所有人的底牌已不再是秘密。`,
   image:'https://res.cloudinary.com/dp5ayfo4z/image/upload/f_auto,q_auto/Phorion_ch2dmx', // 填入路径 e.g. images/phorion.jpg
+  impression:'他总是笑眯眯的。',
   stats:[
     {l:'职业', v:'某养老办公室主任'},
     {l:'前身份', v:'政坛新星，身处权力中心地带'},
@@ -1628,25 +1633,24 @@ const CHARS = [
     {
       num:'01', title:'性格\nCharacter',
       body:`<div class="mbti-type" style="color:#2b5c3f;">ENFJ <span class="mbti-sub" style="font-size:0.30em;">3w2</span></div>
-	  <p>他人缘好得有点反常。跟他合不来的人，要么不知不觉被推到了边缘，要么慢慢被他带着走。这不是阴谋，只是他在的地方，人群自然会重新排列。</p>
-      <p>他身上有天然的感染力，能让人从心底觉得被理解、被接纳。与此同时，他对这段关系终将走向哪里，有着极其清醒的判断。真诚和算计在他身上同时运转，彼此相安无事。</p>
-      <p>他将情感的影响力用于长远的目标，并且完全清楚自己在做什么。为此他可以承受代价，也不会给自己的行为找一个漂亮的名头。<span class="spoiler">比如什么FOR THE GREATER GOOD</span><br>他只是接受这一切，然后继续。</p>
-      <p>关系网络铺得很深很广，不会小觑任何人。平时从不高调，只在关键时刻一击必杀。</p>
-      <p>价值排序：相方 &gt;&gt;&gt;&gt; 其他人。</p>
+	  <p>他人缘好得有点反常。跟他合不来的人，要么不知不觉被推到了边缘，要么慢慢被他带着走。其中涉及到0点阴谋诡计，人群自然重新排列在他的周围。</p>
+      <p>人们和P在一起的时候，总觉得和他很聊得来，似乎所有话题和情感都能被他接住。无论怎样，P对每段关系终将到达的目的地，有非常清晰的意识。</p>
+      <p>P对自己的能力认识得很清楚，也知道它的边界。他并不只是在人群中左右逢源，而是将其投入于更长远的目标，为此他可以承受代价，也不会给自己的行为找一个漂亮的名头。<span class="spoiler">比如什么FOR THE GREATER GOOD</span><br>他接受这条道路带来的一切，然后继续。</p>
+      <p>关系网络铺得很深很广，对任何人都不会掉以轻心。平时从不高调，只在关键时刻一击必杀。</p>
 	  <p><em>你的皮囊底下到底有几分真心？</em></p>`
     },
     
     {
       num:'02', title:'权力逻辑\nPower',
-      body:`<p>主战派。他相信长久的和平需要建立在威慑之上，并且很擅长利用手中的资源把事情推向他想要的方向。</p>
-      <p>战后急流勇退，但关系网络从未断过。该做的事已经做完了，恢复秩序需要新面孔，他很清楚这一点。观望中，如果有合适的接班人就放权交接，没有的话，先找个安分的萝卜守着位置，自己再撑一阵。无论如何，底牌永远只有他自己知道。</p>
-      <p>他对权力的理解从来不是头衔和台面。退到幕后不等于失去影响力，只是换了一种更安静的存在方式。事态在他划定的范围内自由发展。</p>`
+      body:`<p>主战派。相信长久的和平需要建立在威慑之上，并且很擅长利用手中的资源把事情推向他想要的方向。</p>
+      <p>战后急流勇退，仍然维护着自己的关系网。该做的事已经做完了，恢复秩序需要新面孔的同时，他找到了更想要的生活。无论如何，总是有底牌扣在自己手底下。</p>
+      <p>他对权力的理解从来不是头衔和台面，退到幕后不等于失去影响力。</p>`
     },
     {
       num:'03', title:'着装\nOutfit',
       outfits:[
-        {label:'正式 / Formal', text:'三件套是基础，穿有领衬衫系领带。<p>左胸口别着勋章，马甲上挂着银色装饰链，口袋里另一端连着的不是怀表，而是一枚造型独特的银色十字挂件。<em>那些见过某研究所图书管理员的人，如果记性好的话...</em></p>', img:''},
-        {label:'日常 / Casual', text:'针织、牛仔，偶尔一件机车皮衣。爱穿看不出牌子但版型和质感都很好的东西，Brunello Cucinelli、Loro Piana之类混着搭，不张扬，但懂的人一眼就知道不便宜。<br>最近买衣服配饰开始买不同色的双份。', img:''},
+        {label:'正式 / Formal', text:'三件套是上班着装。全定制只有一两套重要的场合穿着，普通的时候就基本是半定制轮着穿。<p>左胸口别着勋章，马甲上挂着银色装饰链，口袋里另一端连着的不是常见的怀表，而是一枚造型独特的银色十字挂件。<em>那些见过某研究所图书管理员的人，如果记性好的话...</em></p>', img:''},
+        {label:'日常 / Casual', text:'针织、牛仔，偶尔一件机车皮衣。爱穿看不出牌子但版型和质感都很好的东西，Brunello Cucinelli、Loro Piana之类的成衣混搭，没有标签，懂得都懂。<br>最近买衣服配饰开始买不同色的双份。', img:''},
       ]
     },
     {
@@ -1695,8 +1699,8 @@ const CHARS = [
 {
   id:'hesperon', index:'02 / 05', name:'Hesperon', nameAlt:'暮 — Hesperus',
   accent:'var(--hs)', accentHex:'#1e3a5c',
-  tagline:'He knows how everything breaks. He has never considered that he could.<br>他熟知万物崩溃的方式，却从未想过自己也会。',
   image:'https://res.cloudinary.com/dp5ayfo4z/image/upload/f_auto,q_auto/Hesperon_o75evp',
+  impression:'普通的、图书管理员。',
   stats:[
     {l:'职业', v:'魔法研究所图书管理员'},
     {l:'前身份', v:'军方基金支持实验室核心研究员'},
@@ -1708,16 +1712,15 @@ const CHARS = [
     {
       num:'01', title:'性格\nCharacter',
       body:`<div class="mbti-type" style="color:#1e3a5c;">INTJ <span class="mbti-sub" style="font-size:0.30em;">· 后天习得Fe · 5w4</span></div>
-	  <p>他生来就比周围人聪明太多。很小的时候他就意识到了这一点，但他没有选择站在高处让人仰望，而是学着把自己放慢，慢到周围的人能跟上他。</p>
-      <p>这件事他做了太久，久到越来越熟练。温和，平静，得体，每一个反应都恰到好处。代价是他自己也分不清了，这些究竟是真的感受，还是练出来的本能。</p>
-      <p>他的头脑从未停止运转。每一个人、每一个局面，进入他视野的瞬间就被拆解、归类、预判。幼年时因为太过出色而长期找不到同龄的对手，他只能在观察中自学。他发现温柔的表达方式能让交流变得更顺畅，于是他就学会了温柔。</p>
-	  <p><em>你可还记得自己的样貌？</em></p>`
+	  <p>他生来就比周围人聪明太多。很小的时候他就意识到了这一点，但他不想当那只鹤，他选择把自己放慢，慢到周围的人能跟上他。</p>
+      <p>这件事他做了太久，温和，平静，得体，久到他自己也分不清，这些究竟是真的感受，还是训练出来的本能。</p>
+      <p>小时候找不到同龄的对手，他只能在观察中自学。他发现温柔的表达方式能让交流变得更顺畅，于是他就学会了温柔。</p>`
     },
     
     {
       num:'02', title:'研究方向\nResearch',
       body:`<p>魔法应用与材料力学方向博士</p>
-	  <p>研究方向：《魔法-力学耦合场中复合材料动态断裂机制与临界破坏阈值的多尺度研究》，简单来说，研究如何用魔法以最高效率摧毁各种材料。后续成果已验证并投入实战，机密。</p>
+	  <p>研究方向：《魔法-力学耦合场中复合材料动态断裂机制与临界破坏阈值的多尺度研究》，人话：研究如何用魔法以最高效率摧毁各种材料。后续成果已验证并投入实战，机密。</p>
       <p>战后因为保密因素被安置为图书管理员，自带研究基金，配有不受管辖的独立实验室，几乎没有KPI。目前在探索魔法材料与声波方向的结合，研究动机大半出于好奇心。</p>
       <p>魔力适应性卓越，玻璃大炮（相对来说）。如果不专职研究，可能会从教。</p>`
     },
@@ -1725,7 +1728,7 @@ const CHARS = [
       num:'03', title:'着装\nOutfit',
       outfits:[
         {label:'制服 / Uniform', text:'研究所图书馆沿袭神学院传统，管理职能制服为牧师服形制，胸前挂有金银两个十字。本人研究过神学教义体系，只为满足好奇心。<br>如果让多种族杂居时代前的老古董看到一个长着角的人型生物穿着牧师服——你们这牧师合法吗？', img:''},
-        {label:'日常 / Casual', text:'衬衫套圆领毛衣，配色低饱和，干净简单。最起码穿戴整齐，心情好的话会有搭配上的小巧思。<br>最近衣柜似乎满了很多。', img:''},
+        {label:'日常 / Casual', text:'无数件长得差不多的深色高领打底，只有他自己知道其中的松紧、版型、材质区别...会穿衬衫套圆领毛衣，配色低饱和，干净简单。穿戴整齐也是尊重他人，心情好的话会有搭配上的小巧思。<br>最近衣柜似乎满了很多。', img:''},
 		{label:'外出 / Outing', text:'外出用法师袍', img:''},
       ]
     },
@@ -1780,8 +1783,8 @@ const CHARS = [
 {
   id:'pieuvre', index:'03 / 05', name:'Pieuvre', nameAlt:'also known as Piv',
   accent:'var(--pv)', accentHex:'#7a3b28',
-  tagline:`The most informed person in the room never looks like she's paying attention.<br>她从不像在留意，却从未错过机密。`,
   image:'',
+  impression:'没人知道她当时在哪里。',
   stats:[
     {l:'MBTI', v:'— 待填写 —'},
     {l:'职业', v:'— 待填写 —'},
@@ -1802,8 +1805,8 @@ const CHARS = [
 {
   id:'dul', index:'04 / 05', name:'Dullahann', nameAlt:'also known as Dul',
   accent:'var(--dl)', accentHex:'#4a3060',
-  tagline:'Something was taken. Something was given. The burning is how he keeps on going.<br>有所失，有所偿。凭此炽焰，方得往。',
   image:'',
+  impression:'真正想赢的人是笑不出来的（嗯）。',
   stats:[
     {l:'MBTI', v:'— 待填写 —'},
     {l:'职业', v:'— 待填写 —'},
@@ -1824,8 +1827,8 @@ const CHARS = [
 {
   id:'medici', index:'05 / 05', name:'Médici', nameAlt:'— 待填写 —',
   accent:'var(--md)', accentHex:'#8a6c2a',
-  tagline:'Everything he feels, he says. Everything he does, he means.<br>心里想的全说出口，做过的事全都当真。',
   image:'',
+  impression:'✨金牌调解员✨',
   stats:[
     {l:'MBTI', v:'— 待填写 —'},
     {l:'职业', v:'— 待填写 —'},
@@ -1850,36 +1853,37 @@ const CP_DATA = {
   '0-1': {
     title:'Phorion × Hesperon',
     subtitle:'晨星与昏星',
-    quote:'你是我的半身。',
+    quote:'所见之人',
     desc:`Hesperus = 昏星（傍晚，西方），Phosphorus = 晨星（黎明，东方）。古希腊人曾以为这是两颗不同的星，直到它们被发现是同一颗金星。<br><em>推荐BGM“Mastermind”——Taylor Swift</em>`,
     pov:[
       {
         name:'Phorion 的视角',
-        text:'阅人无数的好处是，一颗蒙尘的星不需要发光他就认得，毕竟他自己身上也落着同样的灰。处心积虑设计了第一次见面，打算的是合作，是把这个人放进他该在的位置上，一切都在掌握之中。直到他发现自己开始期待那些计划之外的部分。'
+        text:'阅人无数的好处是，一眼就能认出装得真正好的那种人。处心积虑设计了第一次见面，打算的是合作，他需要一个技术侧的盟友。一切都在掌握之中——本来应该是这样——直到他发现自己开始期待那些计划之外的部分。'
       },
       {
         name:'Hesperon 的视角',
-        text:'听人谈起过Phorion，所有人提到他的语气都带着好感，几乎毫无例外。他只觉得那是个跟自己没有任何交集的名字，至于是真好还是装得好，他没兴趣分辨。见面之后，模糊的轮廓坍塌成一个具象，像一条裂缝凭空出现在他的认知世界里。注意力被不可抗拒地吸走，理性和秩序的统治地位，岌岌可危。'
+        text:'听人谈起过Phorion，所有人提到他的语气都带着好感，几乎毫无例外。他只觉得那是个跟自己没有任何交集的名字，他没兴趣分辨到底是真的好还是装的好。见面之后，模糊的道听途说坍塌成一个具象，像一个黑洞凭空出现在他的认知世界里，注意力被不可抗拒地吸走。'
       }
     ],
     timeline:[
       {
         era:'热冲突\n前期',
         event:'相识 ',
-        text:`<p>Phorion替Hesperon扫清了那些人事上的障碍，然后以一个恰到好处的合作者姿态出现。不是施恩，是交换。Hesperon最怕欠人情，但等价交易他接受。</p>`
+        text:`<p>Phorion替Hesperon扫清了那些人事上的障碍，并阐明自己的来意，他需要技术侧的人来帮他做判断。Hesperon最怕欠人情，但等价交易他接受。</p>`
       },
       {
         era:'热冲突\n中期',
         event:'进一步发展',
-        text:`<p>在第一次顺利合作之后，两个人无声无息地达成了某种默契。Hesperon的研究结论总是最先递到Phorion手上，而Phorion替他挡掉了所有他懒得应付的人和事。没有人要求这些，但它自然而然地发生了。</p>
-        <p>Hesperon最先察觉到不对劲。他发现自己在计算一些没有人要求他计算的东西。Phorion的行程风险，Phorion决策中可能被忽略的变量···这都不是常规合作需要他做的事。</p>
-        <p>Phorion不是没有意识到。他只是选择不去拆这个盒子，有些东西一旦打开就没有体面收场的余地，而他还有太多棋要走。</p>`
+        text:`<p>在第一次顺利合作之后，两个人无声无息地达成了某种默契。Hesperon的研究结论总是最先递到Phorion手上，而Phorion替他挡掉了所有他懒得应付的人和事。一切都很自然。</p>
+        <p>直到Hesperon最先察觉到不对劲。他发现自己在计算一些没有人要求他计算的东西。Phorion的行程风险，Phorion决策中可能被忽略的变量···这都不是技术支持需要他做的事。</p>
+        <p>Phorion不是没有意识到。他只是选择不去拆这个盒子，有些东西一旦打开就没有体面收场的余地，而他还有太多事要做。</p>
+		<p>他们保持着正常的交流，偶尔的一点越界也被其中一个人主动掐灭。</p>`
       },
       {
         era:'导火索',
         event:'Hesperon受伤入院 · 确认关系',
-        text:`<p>还没有想好的危机事件发生，Hesperon失联。Phorion在营救过程中的反应超出了一个合作者的合理范围，在场所有人都看到了，他自己也知道。但那不是他有余裕去在乎的事。平安度过危险期的那个夜晚，Phorion一个人把所有的事情想了一遍。不是想该不该，而是想如果这次没有救回来，他会怎样。答案让他很平静，也让他很清楚自己已经没有退路了。</p>
-        <p>在Hesperon醒来之后，睁眼看到便是Phorion的双眼，眼中的火焰燃烧了一夜仍未熄灭。<br>他看了他很久。</p>
+        text:`<p>在一次外勤中，Hesperon跟随的小队被前线余震波及，全体人员失联。Phorion在营救过程中的反应超出了一个合作者的合理范围，节点上的所有人都看到了，他自己也知道。这些暂时不是他有余裕去在乎的事。在危险期的那个夜晚，Phorion一个人把所有的事情想了一遍。想他们的合作，想如果这次没有救回来的后续，想H和他说的话，想H的脸。他很清楚自己已经没有退路了。</p>
+        <p>在Hesperon醒来之后，睁眼看到的是Phorion半阖的双眼。<br>他看了他很久。</p>
         <div class="dialogue-block">
           <div class="dialogue-line">
             <strong>Hesperon</strong>
@@ -1898,30 +1902,28 @@ const CP_DATA = {
 		    「嗯，但我没有躺在病床上。」
 		  </div>
         </div>
-		<p>安静了一会儿，Hesperon把目光移到天花板上，又移回来。</p>
+		<p>安静了一会儿，Hesperon把目光移到床单上，又移回来。</p>
 		<div class="dialogue-block">
 		  <div class="dialogue-line">
 		    <strong>Hesperon</strong>
-		    「我演算过很多遍。」
+		    「有件事我之前一直都想不明白，干脆就没有再想了。」
 		  </div>
 		  </div>
-		  <p>Phorion没有问他算的是什么。</p>
+		  <p>Phorion没有问他想的是什么。</p>
 		  <div class="dialogue-block">
 		  <div class="dialogue-line highlight">
 		    <strong>Phorion</strong>
-		    「我知道。我的结论和你一样。」
+		    「反正我想明白了。」
 		  </div>
 		  </div>
-        <p>他们之间有过很多种沉默，在这一次的沉默里，什么都不用再确认了。</p>
-        <p><em>If not now, when?</em></p>`
+        <p>他们之间有过很多种沉默，在这一次的沉默里，什么都不用再确认了。</p>`
       },
       {
         era:'后来',
         event:'战后日常',
-        text:`<p>两个人各自挂着一个不起眼的闲职，各自以不被注意的方式继续做着该做的事。Hesperon守着他的图书馆和实验室，Phorion有一间自己的办公室，偶尔处理政务，大多数时候提前离开。</p>
-		<p>他们白日生活的交集不多，但总是在该出现的时候出现。有时候Phorion会绕路去接他，有时候Hesperon抬头发现时间到了，就把自己送去Phorion会在的地方。</p>
-        <p>Phorion隔三差五把在实验室里长成蘑菇的Hesperon拽出来，带他去一个地方，说是随便走走。<br>当然不是随便走走。<br>Hesperon知道，但从不拆穿，跟着就是了。</p>
-        <p>偶尔Hesperon在书房里哼歌，Phorion就站在门口屏息听完。你说录音？反正在常用的终端里没有。<br>Phorion喜欢音乐剧，会花心思挑选值得看的带Hesperon去。如果他出来之后，开口第一句评价的是各篇目的和声结构，而不是“怎么一到关键时刻就唱歌”，说明选对了。</p>`
+        text:`<p>两个人各自挂着一个不起眼的闲职，各自以不被注意的方式继续做着该做的事。Hesperon守着他的图书馆和实验室，Phorion有一间自己的办公室，迟到早退也没人能管他。</p>
+		<p>他们白日生活的交集不多，但总是在该出现的时候出现。有时候Phorion会绕路去接他，有时候Hesperon抬头发现时间到了，也不再像以前一样加班，把孩子们赶下班，自己也收拾收拾回家了。</p>
+        <p>偶尔Hesperon在书房里哼歌，Phorion就站在门口杵着。你说录音？反正在常用的终端里没有。<br>Phorion喜欢音乐剧，会花心思挑选觉得还行的带Hesperon去。Hesperon从来不会说“怎么一到关键时刻就唱歌”，无论如何都会认真评价各篇目的和声结构，然后才开始聊自己对剧情的看法。</p>`
       },
       {
         era:'一些心路历程',
@@ -1929,7 +1931,7 @@ const CP_DATA = {
         text:`<p>他像一条龙，安静地盘踞在自己的珍宝周围。</p>
         <p>起初是本能。不让任何人靠得太近，不让任何目光在Hesperon身上停留太久。他给自己找了个保护战略资产的理由，勉强说得过去。<br>中期开始在Hesperon不知情的地方，替他拔掉一些长在暗处的刺。危机之后，他不再费心给自己找理由了。他很清楚自己在做什么，并且毫无愧疚。
         <br>战后圈地密度比战时更高。</p>
-        <p>但Phorion圈地的方式从来不是限制，对习惯于独自扛过所有人事阻力的一只Hesperon来说，这不是围栏，是屋檐。
+        <p>但Phorion圈地的方式从来不是限制，对习惯于独自扛过所有人事阻力的一只Hesperon来说，Phorion的圈地是小篱笆。
 		<span class="spoiler">肉麻两公婆。</span></p>
         <div class="dialogue-block">
           <div class="dialogue-line">
@@ -1941,7 +1943,7 @@ const CP_DATA = {
             「所以你要再靠近一点，方便我盯（笑）」
           </div>
         </div>
-        <p>此处省略。<br>总之第二天Phorion心情很好^^</p>`
+        <p>此处省略。<br>总之第二天他俩心情很好^^</p>`
       },
     ],
     vignettes:[
@@ -2039,8 +2041,12 @@ function renderChar(c) {
   document.getElementById('char-index-label').textContent = c.index;
   document.getElementById('char-name').textContent = c.name;
   document.getElementById('char-name-alt').textContent = c.nameAlt;
-  document.getElementById('char-tagline').innerHTML = c.tagline;
   document.getElementById('char-accent-line').style.background = c.accent;
+
+  const impressionEl = document.getElementById('char-impression');
+  impressionEl.innerHTML = c.impression
+    ? `<div class="char-impression-label">First Impression</div><div class="char-impression-text">${c.impression}</div>`
+    : '';
 
   // Stats
   document.getElementById('char-stats').innerHTML = c.stats.map(s =>
