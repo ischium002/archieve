@@ -469,7 +469,7 @@ body.splash-lock { overflow: hidden; }
 }
 .char-selector-btn:last-child { border-right: 1px solid var(--rule); }
 .char-selector-btn:hover { color: var(--ink); background: var(--bg2); }
-.char-selector-btn.active { color: var(--white); border-color: var(--ink); background: var(--ink); }
+.char-selector-btn.active { color: var(--white); border-color: var(--accent, var(--ink)); background: var(--accent, var(--ink)); }
 
 /* Char hero */
 .char-hero {
@@ -495,6 +495,22 @@ body.splash-lock { overflow: hidden; }
 .char-img-placeholder p { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em; opacity: 0.5; }
 .char-hero-text {
   padding: 3.5rem 4rem;
+  position: relative;
+  isolation: isolate;
+}
+/* 角色星图 — 垫在 hero 文字层下面的淡星座（accent 色随角色切换） */
+.char-constellation {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+.char-constellation circle { fill: var(--accent, var(--ink3)); }
+.char-constellation circle.ring { fill: none; stroke: var(--accent, var(--ink3)); stroke-width: 1; }
+.char-constellation circle.tw { animation: starTwinkle 6s ease-in-out var(--d, 0s) infinite; }
+.char-constellation line { stroke: var(--accent, var(--ink3)); stroke-width: 1; opacity: 0.13; }
+@media (prefers-reduced-motion: reduce) {
+  .char-constellation circle.tw { animation: none; }
 }
 .char-hero-index {
   font-family: var(--mono); font-size: 0.6rem;
@@ -526,8 +542,9 @@ body.splash-lock { overflow: hidden; }
   color: var(--ink3); margin-bottom: 0.4rem;
 }
 .char-impression-text {
-  font-size: 1rem; color: var(--ink2);
-  line-height: 1.6;
+  font-size: 1.35rem; color: var(--ink2);
+  line-height: 1.55;
+  font-style: italic;
 }
 .char-stats {
   display: grid; grid-template-columns: 1fr 1fr;
@@ -560,7 +577,7 @@ body.splash-lock { overflow: hidden; }
   color: var(--ink3); transition: all 0.2s;
 }
 .char-tab-btn:hover { color: var(--ink); }
-.char-tab-btn.active { color: var(--ink); border-bottom-color: var(--ink); }
+.char-tab-btn.active { color: var(--ink); border-bottom-color: var(--accent, var(--ink)); }
 
 /* Tab content */
 .char-tab-content { display: none; }
@@ -580,7 +597,7 @@ body.splash-lock { overflow: hidden; }
 }
 .profile-sec-num {
   font-family: var(--mono); font-size: 0.55rem;
-  letter-spacing: 0.2em; color: var(--ink3); margin-bottom: 0.5rem;
+  letter-spacing: 0.2em; color: var(--accent, var(--ink3)); margin-bottom: 0.5rem;
 }
 .profile-sec-title {
   font-size: 1.4rem; font-weight: 300;
@@ -599,6 +616,7 @@ body.splash-lock { overflow: hidden; }
 .mbti-type {
   font-size: 2.8rem; font-weight: 300;
   letter-spacing: 0.2em; margin-bottom: 0.5rem;
+  color: var(--accent, var(--ink));
 }
 .mbti-sub {
   font-family: var(--mono); font-size: 0.62rem;
@@ -730,7 +748,7 @@ body.splash-lock { overflow: hidden; }
 .cp-quote {
   font-size: 1.15rem; font-style: italic;
   font-weight: 300; line-height: 1.65;
-  color: var(--ink2); border-left: 2px solid var(--cp);
+  color: var(--ink2); border-left: 2px solid var(--accent, var(--cp));
   padding-left: 1.5rem; max-width: 44ch;
 }
 .cp-desc {
@@ -756,7 +774,7 @@ body.splash-lock { overflow: hidden; }
 .tl-dot {
   position: absolute; left: calc(8rem - 4px); top: 3rem;
   width: 9px; height: 9px; border-radius: 50%;
-  border: 1px solid var(--ink); background: var(--bg);
+  border: 1px solid var(--accent, var(--ink)); background: var(--bg);
 }
 .tl-item:first-child .tl-dot { top: 0; }
 .tl-era {
@@ -835,15 +853,30 @@ body.splash-lock { overflow: hidden; }
 .mt1 { margin-top: 1rem; }
 .mt2 { margin-top: 2rem; }
 
-/* 隐藏剧透文字：hover 或点击显形（触屏没有 hover） */
+/* 图片防随手保存：拦 iOS 长按 / 拖拽 / 选中。截图和 devtools 拦不住，属于提高门槛 */
+img {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+/* 图片容器盖一层透明层：右键/长按命中的是它，不是 img 本体 */
+.char-hero-img, .outfit-img, .net-node-img, .net-list-card-img, .net-drawer-head-img { position: relative; }
+.char-hero-img::after, .outfit-img::after, .net-node-img::after,
+.net-list-card-img::after, .net-drawer-head-img::after {
+  content: '';
+  position: absolute; inset: 0;
+}
+
+/* 隐藏剧透文字：hover 或点击显形（触屏没有 hover）
+   斜纹底提示这里藏着字 */
 .spoiler {
-  background: var(--bg);
-  color: var(--bg);
+  background: repeating-linear-gradient(45deg, var(--bg2), var(--bg2) 3px, var(--bg) 3px, var(--bg) 6px);
+  color: transparent;
   cursor: pointer;
-  transition: color 0.3s;
+  transition: color 0.3s, background 0.3s;
   padding: 0 2px;
 }
-.spoiler:hover, .spoiler.revealed { color: var(--ink2); }
+.spoiler:hover, .spoiler.revealed { color: var(--ink2); background: var(--bg2); }
 
 /* ═══════════════════════════════════════════
    NETWORKING PAGE
@@ -1173,8 +1206,8 @@ body.splash-lock { overflow: hidden; }
 @media (max-width: 600px) {
   /* Nav */
   .global-nav { padding: 0 0.9rem; height: 3rem; }
-  .nav-logo { font-size: 0.55rem; letter-spacing: 0.18em; }
-  .nav-links { gap: 0.85rem; }
+  .nav-logo { display: none; } /* 和 Universe 功能重复，小屏让位给链接 */
+  .nav-links { width: 100%; justify-content: space-between; gap: 0.5rem; }
   .nav-link { font-size: 0.55rem; letter-spacing: 0.08em; }
   .nav-sep { display: none; }
   .page { padding-top: 3rem; }
@@ -1195,20 +1228,16 @@ body.splash-lock { overflow: hidden; }
   .strip-card { padding: 1.4rem 1rem; }
   .strip-card-name { font-size: 1.05rem; }
 
-  /* Char header */
+  /* Char header — 小屏只显示编号，五个按钮均分一行，不用横滚 */
   .char-page-header { padding: 2rem 1.2rem 0; }
-  .char-selector {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    margin-bottom: 2rem;
-  }
-  .char-selector::-webkit-scrollbar { display: none; }
+  .char-selector { margin-bottom: 2rem; }
+  .char-selector-name { display: none; }
   .char-selector-btn {
-    flex-shrink: 0;
-    padding: 0.5rem 1rem;
-    font-size: 0.55rem;
-    letter-spacing: 0.12em;
+    flex: 1;
+    padding: 0.55rem 0;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-align: center;
   }
 
   /* Char hero */
@@ -1528,11 +1557,11 @@ body.splash-lock { overflow: hidden; }
   <div class="char-page-header">
     <!-- Character selector -->
     <div class="char-selector">
-      <button class="char-selector-btn active" onclick="openChar(0)">01 Phorion</button>
-      <button class="char-selector-btn" onclick="openChar(1)">02 Hesperon</button>
-      <button class="char-selector-btn" onclick="openChar(2)">03 Pieuvre</button>
-      <button class="char-selector-btn" onclick="openChar(3)">04 Dul</button>
-      <button class="char-selector-btn" onclick="openChar(4)">05 Médici</button>
+      <button class="char-selector-btn active" onclick="openChar(0)">01 <span class="char-selector-name">Phorion</span></button>
+      <button class="char-selector-btn" onclick="openChar(1)">02 <span class="char-selector-name">Hesperon</span></button>
+      <button class="char-selector-btn" onclick="openChar(2)">03 <span class="char-selector-name">Pieuvre</span></button>
+      <button class="char-selector-btn" onclick="openChar(3)">04 <span class="char-selector-name">Dul</span></button>
+      <button class="char-selector-btn" onclick="openChar(4)">05 <span class="char-selector-name">Médici</span></button>
     </div>
 
     <!-- Char hero (swapped by JS) -->
@@ -1544,6 +1573,7 @@ body.splash-lock { overflow: hidden; }
         </div>
       </div>
       <div class="char-hero-text">
+        <svg class="char-constellation" id="char-constellation" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
         <div class="char-hero-index" id="char-index-label"></div>
         <h2 class="char-hero-name" id="char-name"></h2>
         <div class="char-hero-name-alt" id="char-name-alt"></div>
@@ -1618,7 +1648,7 @@ body.splash-lock { overflow: hidden; }
 const CHARS = [
 /* 0: PHORION */
 {
-  id:'phorion', index:'01 / 05', name:'Phorion', nameAlt:'曦 — Phosphorus',
+  id:'phorion', index:'01 / 05', name:'Phorion', nameAlt:'Phosphorus',
   accent:'var(--ph)', accentHex:'#2d5a3d',
   image:'https://res.cloudinary.com/dp5ayfo4z/image/upload/f_auto,q_auto/Phorion_ch2dmx', // 填入路径 e.g. images/phorion.jpg
   impression:'他总是笑眯眯的。',
@@ -1632,7 +1662,7 @@ const CHARS = [
   profile:[
     {
       num:'01', title:'性格\nCharacter',
-      body:`<div class="mbti-type" style="color:#2b5c3f;">ENFJ <span class="mbti-sub" style="font-size:0.30em;">3w2</span></div>
+      body:`<div class="mbti-type">ENFJ <span class="mbti-sub" style="font-size:0.30em;">3w2</span></div>
 	  <p>他人缘好得有点反常。跟他合不来的人，要么不知不觉被推到了边缘，要么慢慢被他带着走。其中涉及到0点阴谋诡计，人群自然重新排列在他的周围。</p>
       <p>人们和P在一起的时候，总觉得和他很聊得来，似乎所有话题和情感都能被他接住。无论怎样，P对每段关系终将到达的目的地，有非常清晰的意识。</p>
       <p>P对自己的能力认识得很清楚，也知道它的边界。他并不只是在人群中左右逢源，而是将其投入于更长远的目标，为此他可以承受代价，也不会给自己的行为找一个漂亮的名头。<span class="spoiler">比如什么FOR THE GREATER GOOD</span><br>他接受这条道路带来的一切，然后继续。</p>
@@ -1674,7 +1704,7 @@ const CHARS = [
 	          <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.18em;color:var(--ink3);text-transform:uppercase;">掌控</div>
 			  <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.18em;color:var(--ink3);text-transform:uppercase;">command</div>
 	        </div>
-	        <div style="padding:1.5rem 1rem;border-right:1px solid var(--rule);text-align:center;">
+	        <div style="padding:1.5rem 1rem;text-align:center;">
 	          <div style="font-size:2rem;margin-bottom:0.8rem;opacity:0.7;">✴︎</div>
 	          <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.18em;color:var(--ink3);text-transform:uppercase;">光</div>
 			  <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.18em;color:var(--ink3);text-transform:uppercase;">lux</div>
@@ -1697,7 +1727,7 @@ const CHARS = [
 
 /* 1: HESPERON */
 {
-  id:'hesperon', index:'02 / 05', name:'Hesperon', nameAlt:'暮 — Hesperus',
+  id:'hesperon', index:'02 / 05', name:'Hesperon', nameAlt:'Hesperus',
   accent:'var(--hs)', accentHex:'#1e3a5c',
   image:'https://res.cloudinary.com/dp5ayfo4z/image/upload/f_auto,q_auto/Hesperon_o75evp',
   impression:'普通的、图书管理员。',
@@ -1711,7 +1741,7 @@ const CHARS = [
   profile:[
     {
       num:'01', title:'性格\nCharacter',
-      body:`<div class="mbti-type" style="color:#1e3a5c;">INTJ <span class="mbti-sub" style="font-size:0.30em;">· 后天习得Fe · 5w4</span></div>
+      body:`<div class="mbti-type">INTJ <span class="mbti-sub" style="font-size:0.30em;">· 后天习得Fe · 5w4</span></div>
 	  <p>他生来就比周围人聪明太多。很小的时候他就意识到了这一点，但他不想当那只鹤，他选择把自己放慢，慢到周围的人能跟上他。</p>
       <p>这件事他做了太久，温和，平静，得体，久到他自己也分不清，这些究竟是真的感受，还是训练出来的本能。</p>
       <p>小时候找不到同龄的对手，他只能在观察中自学。他发现温柔的表达方式能让交流变得更顺畅，于是他就学会了温柔。</p>`
@@ -1781,7 +1811,7 @@ const CHARS = [
 
 /* 2: PIEUVRE */
 {
-  id:'pieuvre', index:'03 / 05', name:'Pieuvre', nameAlt:'also known as Piv',
+  id:'pieuvre', index:'03 / 05', name:'Pieuvre', nameAlt:'Tahatiruë Vëlith Cthelanni',
   accent:'var(--pv)', accentHex:'#7a3b28',
   image:'',
   impression:'没人知道她当时在哪里。',
@@ -1803,10 +1833,10 @@ const CHARS = [
 
 /* 3: DUL */
 {
-  id:'dul', index:'04 / 05', name:'Dullahann', nameAlt:'also known as Dul',
+  id:'dul', index:'04 / 05', name:'Dullahann', nameAlt:'***',
   accent:'var(--dl)', accentHex:'#4a3060',
   image:'',
-  impression:'真正想赢的人是笑不出来的（嗯）。',
+  impression:'真正想赢的人是没有笑容的（嗯）。',
   stats:[
     {l:'MBTI', v:'— 待填写 —'},
     {l:'职业', v:'— 待填写 —'},
@@ -1825,7 +1855,7 @@ const CHARS = [
 
 /* 4: MÉDICI */
 {
-  id:'medici', index:'05 / 05', name:'Médici', nameAlt:'— 待填写 —',
+  id:'medici', index:'05 / 05', name:'Médici', nameAlt:'Do ut des',
   accent:'var(--md)', accentHex:'#8a6c2a',
   image:'',
   impression:'✨金牌调解员✨',
@@ -1929,9 +1959,8 @@ const CP_DATA = {
         era:'一些心路历程',
         event:'Phorion的圈地逻辑',
         text:`<p>他像一条龙，安静地盘踞在自己的珍宝周围。</p>
-        <p>起初是本能。不让任何人靠得太近，不让任何目光在Hesperon身上停留太久。他给自己找了个保护战略资产的理由，勉强说得过去。<br>中期开始在Hesperon不知情的地方，替他拔掉一些长在暗处的刺。危机之后，他不再费心给自己找理由了。他很清楚自己在做什么，并且毫无愧疚。
-        <br>战后圈地密度比战时更高。</p>
-        <p>但Phorion圈地的方式从来不是限制，对习惯于独自扛过所有人事阻力的一只Hesperon来说，Phorion的圈地是小篱笆。
+        <p>起初是本能。不让任何人靠得太近，不让任何目光在Hesperon身上停留太久。他给自己找了个保护战略资产的理由，勉强说得过去。<br>中期开始在Hesperon不知情的地方，替他拔掉一些长在暗处的刺。危机之后，他不再费心给自己找理由了。他很清楚自己在做什么，并且毫无愧疚。</p>
+        <p>战后圈地密度比战时更高，但Phorion圈地的方式对于习惯独自扛过所有阻力的一只Hesperon来说...Phorion的圈地只是小篱笆。
 		<span class="spoiler">肉麻两公婆。</span></p>
         <div class="dialogue-block">
           <div class="dialogue-line">
@@ -2024,9 +2053,107 @@ function showTab(tab) {
 }
 
 /* ─────────────────────────────────────
+   RENDER: CONSTELLATION（hero 文字区背景星图）
+   每个角色一组手摆的星座，viewBox 400×320
+   stars: x/y 坐标, r 半径, o 透明度, tw 闪烁, ring 空心圈
+   links: 星与星的连线（下标对）
+───────────────────────────────────── */
+const CONSTELLATIONS = {
+  /* Phorion — 晨星：上升的链，最亮一颗在右上 */
+  phorion: {
+    stars: [
+      {x:48,  y:268, r:2,   o:0.20},
+      {x:118, y:232, r:2.5, o:0.24},
+      {x:176, y:178, r:2,   o:0.20},
+      {x:243, y:132, r:2.5, o:0.26},
+      {x:318, y:72,  r:4,   o:0.38, tw:true},
+      {x:356, y:150, r:1.5, o:0.15, tw:true},
+      {x:282, y:214, r:1.5, o:0.14},
+      {x:86,  y:120, r:1.5, o:0.13, tw:true},
+    ],
+    links: [[0,1],[1,2],[2,3],[3,4]],
+  },
+  /* Hesperon — 昏星：下沉的链，最亮一颗在右下近地平线 */
+  hesperon: {
+    stars: [
+      {x:70,  y:64,  r:2,   o:0.20},
+      {x:140, y:102, r:2.5, o:0.24},
+      {x:204, y:148, r:2,   o:0.20},
+      {x:266, y:198, r:2.5, o:0.26},
+      {x:330, y:252, r:4,   o:0.38, tw:true},
+      {x:352, y:96,  r:1.5, o:0.15, tw:true},
+      {x:120, y:208, r:1.5, o:0.13},
+      {x:250, y:60,  r:1.5, o:0.14, tw:true},
+    ],
+    links: [[0,1],[1,2],[2,3],[3,4]],
+  },
+  /* Pieuvre — 放射状的腕足 */
+  pieuvre: {
+    stars: [
+      {x:270, y:150, r:3.5, o:0.32, tw:true},
+      {x:200, y:80,  r:2,   o:0.20},
+      {x:330, y:70,  r:2,   o:0.20},
+      {x:360, y:180, r:2,   o:0.20},
+      {x:310, y:250, r:2,   o:0.20},
+      {x:210, y:230, r:2,   o:0.20},
+      {x:160, y:160, r:1.5, o:0.16},
+      {x:80,  y:90,  r:1.5, o:0.13, tw:true},
+    ],
+    links: [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6]],
+  },
+  /* Dul — 断开的链，缺席的那颗只剩一个空心圈 */
+  dul: {
+    stars: [
+      {x:90,  y:240, r:2,   o:0.20},
+      {x:160, y:210, r:2.5, o:0.24},
+      {x:230, y:180, r:2,   o:0.20},
+      {x:320, y:120, r:2.5, o:0.26},
+      {x:360, y:60,  r:2,   o:0.20},
+      {x:275, y:150, r:5,   o:0.22, ring:true},
+      {x:60,  y:80,  r:1.5, o:0.14, tw:true},
+    ],
+    links: [[0,1],[1,2],[3,4]],
+  },
+  /* Médici — 天平式的折线 */
+  medici: {
+    stars: [
+      {x:70,  y:180, r:2,   o:0.20},
+      {x:130, y:100, r:2.5, o:0.24},
+      {x:195, y:170, r:2,   o:0.22},
+      {x:260, y:95,  r:2.5, o:0.24},
+      {x:325, y:175, r:3,   o:0.30, tw:true},
+      {x:350, y:70,  r:1.5, o:0.15, tw:true},
+      {x:100, y:255, r:1.5, o:0.13},
+    ],
+    links: [[0,1],[1,2],[2,3],[3,4]],
+  },
+};
+
+function renderConstellation(c) {
+  const svg = document.getElementById('char-constellation');
+  if (!svg) return;
+  const data = CONSTELLATIONS[c.id];
+  if (!data) { svg.innerHTML = ''; return; }
+  const pts = data.stars;
+  svg.innerHTML =
+    data.links.map(([a, b]) =>
+      `<line x1="${pts[a].x}" y1="${pts[a].y}" x2="${pts[b].x}" y2="${pts[b].y}"/>`
+    ).join('') +
+    pts.map((s, i) => {
+      const cls = s.ring ? ' class="ring"' : (s.tw ? ' class="tw"' : '');
+      return `<circle cx="${s.x}" cy="${s.y}" r="${s.r}"${cls} style="--o:${s.o};--d:${(i * 0.7) % 3}s;opacity:${s.o}"/>`;
+    }).join('');
+}
+
+/* ─────────────────────────────────────
    RENDER: CHAR HERO
 ───────────────────────────────────── */
 function renderChar(c) {
+  // 整页 accent 随角色切换（selector/tab/序号/时间轴圆点/MBTI/星图 都吃这个变量）
+  document.getElementById('page-chars').style.setProperty('--accent', c.accentHex);
+
+  renderConstellation(c);
+
   // Image
   const imgCol = document.getElementById('char-img-col');
   imgCol.style.background = c.accentHex + '18';
@@ -2066,7 +2193,7 @@ function buildSection(sec, c) {
     bodyHTML = `<div class="profile-body">${sec.body}</div>`;
   } else if (sec.mbti) {
     bodyHTML = `<div>
-      <div class="mbti-type" style="color:${c.accentHex}">${sec.mbti.type}</div>
+      <div class="mbti-type">${sec.mbti.type}</div>
       <div class="mbti-sub">${sec.mbti.sub}</div>
       <ul class="trait-list">${sec.mbti.traits.map(t=>`<li>${t}</li>`).join('')}</ul>
       ${sec.mbti.note ? `<div class="mbti-note">${sec.mbti.note}</div>` : ''}
@@ -2606,6 +2733,14 @@ document.addEventListener('click', e => {
 document.addEventListener('click', e => {
   const sp = e.target.closest('.spoiler');
   if (sp) sp.classList.toggle('revealed');
+});
+
+/* 图片防随手保存：右键菜单 + 拖拽。截图拦不住，尽人事 */
+document.addEventListener('contextmenu', e => {
+  if (e.target.closest('img, .char-hero-img, .outfit-img, .net-node-img, .net-list-card-img, .net-drawer-head-img')) e.preventDefault();
+});
+document.addEventListener('dragstart', e => {
+  if (e.target.tagName === 'IMG') e.preventDefault();
 });
 
 /* ─────────────────────────────────────
