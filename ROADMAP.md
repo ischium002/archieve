@@ -16,7 +16,7 @@
   2. 插图与章节双向链接：图出现在故事对应段落，同时汇总进画廊页（按角色、按故事线筛选）；
   3. 全站统一一个 lightbox 实现，别每页各写一个。
   注意：chars-data.js 里 outfit 的 `img:''` 空槽已经在等图。新图组件记得补进防右键 selector（见 MAINTENANCE.md 第 4 节）。
-- [ ] **STORIES 双数据源合并** ★★☆ —— 在 `../ph-timeline/` 仓库：index.html 的 STORIES 数组和 stories/storylines.js 是两份独立数据，线越多越疼，趁早合并成单一数据源。
+- [x] **STORIES 双数据源合并** ★★☆ —— 已完成（2026-07-11，ph-timeline 提交 214e180）：storylines.js 成为唯一内容源，index.html 只剩 WAVE_SHAPES 形状查表。
 
 ## 概念层：让「档案馆」名副其实
 
