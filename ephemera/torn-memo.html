@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>夹带物 · 编号 ██-附1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Long+Cang&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS（对齐 h-paper / 主站）
+═══════════════════════════════════════════ */
+:root {
+  --bg:    #f7f4ee;
+  --bg2:   #efebe3;
+  --page:  #e8e3d7;
+  --ink:   #181814;
+  --ink2:  #5a574e;
+  --ink3:  #9a9590;
+  --rule:  #d8d2c4;
+  --hs:    #1e3a5c;
+  --hs-tint:#e6edf5;
+  --stamp: #9c3a2e;
+  --mono:  'DM Mono', monospace;
+  --serif: 'Cormorant Garamond', 'Noto Serif SC', serif;
+
+  /* 本页新增 */
+  --line-blue: #c3cdda;                                    /* 横线蓝灰 */
+  --pen:       #2c3a5e;                                    /* 圆珠笔蓝黑 */
+  --tea:       #a9834e;                                    /* 茶渍棕 */
+  --tape:      color-mix(in srgb, var(--bg2) 58%, transparent);
+  --margin-red:color-mix(in srgb, var(--stamp) 42%, transparent);
+  --hand:      'Caveat', 'Long Cang', cursive;
+  --line:      2.4rem;                                     /* 横线周期 = 手写行高 */
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--hand);
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 2.5rem 1rem 4rem;
+}
+
+/* 装饰性 SVG 一律不可选中、不接事件（点击走 li） */
+svg { user-select: none; -webkit-user-select: none; pointer-events: none; }
+
+.board { max-width: 30rem; margin: 0 auto; }
+
+/* 环境音：机构感允许露的三个角之一 */
+.env-line {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.28em;
+  color: var(--ink3);
+  margin-bottom: 1.8rem;
+}
+
+/* ═══════════════════════════════════════════
+   撕下来的纸页
+═══════════════════════════════════════════ */
+.paper-wrap {
+  position: relative;
+  transform: rotate(-1.4deg);
+  filter: drop-shadow(0 1px 2px rgba(24,24,20,0.10)) drop-shadow(0 14px 28px rgba(24,24,20,0.14));
+}
+
+.paper {
+  position: relative;
+  background-color: var(--bg);
+  /* 左缘红边线 + 横线（周期严格 = --line，字要坐在线上） */
+  background-image:
+    linear-gradient(to right,
+      transparent 2.55rem,
+      var(--margin-red) 2.55rem, var(--margin-red) calc(2.55rem + 1px),
+      transparent calc(2.55rem + 1px)),
+    repeating-linear-gradient(to bottom,
+      transparent 0,
+      transparent calc(var(--line) * 0.8 - 1px),
+      var(--line-blue) calc(var(--line) * 0.8 - 1px),
+      var(--line-blue) calc(var(--line) * 0.8),
+      transparent calc(var(--line) * 0.8),
+      transparent var(--line));
+  padding: var(--line) 1.4rem calc(var(--line) * 2.2) 3.2rem;
+  /* 左缘撕边锯齿 + 上缘轻微不平（写死，物证不该每次变形） */
+  clip-path: polygon(
+    14px 3px, 6% 1px, 12% 4px, 20% 2px, 30% 5px, 42% 1px, 55% 3px, 68% 0px, 80% 4px, 91% 1px, 100% 3px,
+    100% 100%, 16px 100%,
+    3px 97%, 12px 94.5%, 5px 92%, 15px 89%, 7px 86.5%, 2px 84%, 13px 81%, 6px 78%, 16px 75%,
+    4px 72%, 10px 69%, 3px 66%, 14px 63%, 8px 60%, 2px 57%, 12px 54%, 5px 51%, 15px 48%,
+    6px 45%, 3px 42%, 13px 39%, 7px 36%, 16px 33%, 4px 30%, 11px 27%, 2px 24%, 14px 21%,
+    6px 18%, 12px 15%, 3px 12%, 15px 9%, 7px 6%
+  );
+  /* 线圈孔被撕穿的残迹：左缘一列半圆缺口 */
+  -webkit-mask-image: radial-gradient(circle at 0.5rem 50%, transparent 0.4rem, #000 calc(0.4rem + 1px));
+  -webkit-mask-size: 100% var(--line);
+  -webkit-mask-repeat: repeat;
+  mask-image: radial-gradient(circle at 0.5rem 50%, transparent 0.4rem, #000 calc(0.4rem + 1px));
+  mask-size: 100% var(--line);
+  mask-repeat: repeat;
+}
+
+/* 页角折角 */
+.paper::after {
+  content: '';
+  position: absolute;
+  right: 0; bottom: 0;
+  width: 1.5rem; height: 1.5rem;
+  background: linear-gradient(315deg, var(--page) 50%, var(--bg2) 50%, var(--bg) 100%);
+  box-shadow: -1px -1px 2px rgba(24,24,20,0.08);
+}
+
+/* 纸胶带：档案馆装裱的痕迹（机构感第二个角） */
+.tape {
+  position: absolute;
+  top: -0.75rem; left: 50%;
+  width: 6.5rem; height: 1.7rem;
+  background: var(--tape);
+  transform: translateX(-50%) rotate(-2.5deg);
+  clip-path: polygon(2% 0, 98% 3%, 100% 22%, 97% 38%, 100% 55%, 97.5% 74%, 100% 90%, 97% 100%, 3% 97%, 0 80%, 2.5% 62%, 0 45%, 2% 26%, 0 12%);
+  z-index: 3;
+}
+
+/* 茶渍环（是茶不是咖啡） */
+.stain {
+  position: absolute;
+  top: 3rem; right: 1.6rem;
+  width: 6.5rem; height: 6.5rem;
+  background:
+    radial-gradient(closest-side, transparent 60%, var(--tea) 65%, transparent 72%),
+    radial-gradient(closest-side at 55% 44%, transparent 62%, var(--tea) 66%, transparent 71%);
+  opacity: 0.28;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════
+   手写内容
+═══════════════════════════════════════════ */
+.memo { list-style: none; position: relative; z-index: 1; }
+.memo li {
+  height: var(--line);
+  line-height: var(--line);
+  font-family: var(--hand);
+  font-size: 1.42rem;
+  letter-spacing: 0.02em;
+  color: var(--pen);
+  white-space: nowrap;
+  /* 微位移/微旋转写死在行内（--r/--x/--y），禁止完美对齐 */
+  transform: rotate(var(--r, 0deg)) translate(var(--x, 0px), var(--y, 0px));
+}
+
+/* 勾：一笔画，末端出锋略有差异 */
+.tick {
+  width: 1.15rem; height: 0.95rem;
+  margin-left: 0.45rem;
+  vertical-align: -0.08rem;
+  fill: none;
+  stroke: var(--pen);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.88;
+}
+
+/* 手写箭头（23 → 22.5 那条，不用打印体箭头） */
+.arr {
+  width: 1.55rem; height: 0.7rem;
+  vertical-align: 0.02rem;
+  margin: 0 0.1rem;
+  fill: none;
+  stroke: var(--pen);
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  opacity: 0.9;
+}
+
+/* 划掉的那行：墨团底下没有任何文字节点，这一行只有 SVG */
+#inkline { cursor: pointer; }
+.scribble {
+  width: 13rem; height: 1.95rem;
+  vertical-align: -0.5rem;
+  overflow: visible;
+}
+.scribble path {
+  fill: none;
+  stroke: var(--pen);
+  stroke-linecap: round;
+}
+
+/* 页边涂鸦：右下角三笔速写，全页唯一一处"画" */
+.doodle {
+  position: absolute;
+  right: 1.9rem; bottom: 1rem;
+  width: 3rem; height: 3.9rem;
+  transform: rotate(5deg);
+  fill: none;
+  stroke: var(--pen);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.68;
+}
+
+/* ═══════════════════════════════════════════
+   编目签（机构感第三个角，面积越小越好）
+═══════════════════════════════════════════ */
+.tag-card {
+  max-width: 21.5rem;
+  margin: 2.6rem 0 0 auto;
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  box-shadow: 0 1px 2px rgba(24,24,20,0.06), 0 4px 12px rgba(24,24,20,0.07);
+  transform: rotate(0.6deg);
+  padding: 0.8rem 0.95rem 0.75rem;
+  font-family: var(--mono);
+}
+.tag-title {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  color: var(--ink);
+  border-bottom: 1px dashed var(--rule);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.tag-row {
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  line-height: 1.95;
+  color: var(--ink2);
+}
+
+/* 点击墨团行的收存提示（复用 access-notice 模式） */
+.keep-notice {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  line-height: 1.9;
+  color: var(--stamp);
+  text-align: center;
+  margin-top: 1.6rem;
+  min-height: 1.2em;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.keep-notice.show { opacity: 0.85; }
+
+/* 页脚 */
+.site-footer {
+  max-width: 30rem;
+  margin: 2.2rem auto 0;
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: var(--ink3);
+  text-align: center;
+  line-height: 2.1;
+}
+
+/* ═══════════════════════════════════════════
+   移动端（断点对齐主站：600）
+═══════════════════════════════════════════ */
+@media (max-width: 600px) {
+  :root { --line: 2.2rem; }
+  body { padding: 1.4rem 0.7rem 3rem; }
+  .board { max-width: none; }
+  .env-line { margin-bottom: 1.2rem; }
+  .paper {
+    padding: var(--line) 1rem calc(var(--line) * 2.2) 2.9rem;
+    background-image:
+      linear-gradient(to right,
+        transparent 2.3rem,
+        var(--margin-red) 2.3rem, var(--margin-red) calc(2.3rem + 1px),
+        transparent calc(2.3rem + 1px)),
+      repeating-linear-gradient(to bottom,
+        transparent 0,
+        transparent calc(var(--line) * 0.8 - 1px),
+        var(--line-blue) calc(var(--line) * 0.8 - 1px),
+        var(--line-blue) calc(var(--line) * 0.8),
+        transparent calc(var(--line) * 0.8),
+        transparent var(--line));
+  }
+  .memo li { font-size: 1.26rem; }
+  .scribble { width: 11.2rem; height: 1.8rem; vertical-align: -0.46rem; }
+  .stain { top: 2.6rem; right: 1rem; width: 5.6rem; height: 5.6rem; }
+  .tag-card { max-width: 19.5rem; }
+}
+@media (max-width: 380px) {
+  :root { --line: 2.05rem; }
+  .memo li { font-size: 1.13rem; }
+  .scribble { width: 10rem; height: 1.7rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="board">
+  <div class="env-line">档案馆 · 夹带物收存 · 仅此一页</div>
+
+  <div class="paper-wrap">
+    <div class="paper">
+      <div class="stain" aria-hidden="true"></div>
+
+      <ul class="memo">
+        <li style="--r:-0.4deg; --x:1px">例会材料 周三前<svg class="tick" viewBox="0 0 24 20" aria-hidden="true"><path d="M3 11 C6 13.5 8 15.5 9.5 17 C12 11 16.5 5 21 3"/></svg></li>
+        <li style="--r:0.5deg; --x:3px; --y:1px">窗帘 尺寸不对 重新量<svg class="tick" viewBox="0 0 24 20" style="transform:rotate(-6deg)" aria-hidden="true"><path d="M4 12 C7 14 9 16 10 17.5 C12.5 10.5 16 6 20.5 2.5"/></svg></li>
+        <li style="--r:-0.2deg; --y:-1px">空调 23<svg class="arr" viewBox="0 0 34 14" aria-hidden="true"><path d="M3 8 C11 6.5 19 6.5 27 7"/><path d="M22 3 C24.5 4.5 26.5 6 28.5 7 C26 8.5 24 9.8 22.4 11"/></svg>22.5 试三天<svg class="tick" viewBox="0 0 24 20" style="transform:rotate(4deg)" aria-hidden="true"><path d="M3 11 C6 13.5 8 15.5 9.5 17 C12 11 16.5 5 21 3"/></svg></li>
+        <li style="--r:0.3deg; --x:2px">链子扣环 送修 顺路<svg class="tick" viewBox="0 0 24 20" style="transform:rotate(-3deg)" aria-hidden="true"><path d="M4 12 C7 14 9 16 10 17.5 C12.5 10.5 16 6 20.5 2.5"/></svg></li>
+        <li style="--r:-0.55deg; --x:1px; --y:1px">图书馆 还书 + 罚金 备零钱<svg class="tick" viewBox="0 0 24 20" style="transform:rotate(7deg)" aria-hidden="true"><path d="M3 11 C6 13.5 8 15.5 9.5 17 C12 11 16.5 5 21 3"/></svg></li>
+        <li id="inkline" style="--r:0.2deg; --x:2px" aria-label="该行已由书写人划去"><svg class="scribble" viewBox="0 0 300 40" aria-hidden="true"><g><path stroke-width="2.6" d="M5 22 C42 12 84 30 122 18 C162 8 202 28 242 16 C266 11 285 20 296 16"/><path stroke-width="2.3" d="M9 15 C50 27 92 9 132 22 C172 31 212 11 250 22 C274 27 290 15 297 20"/><path stroke-width="2.8" d="M4 27 C46 16 88 31 126 13 C166 6 206 29 246 26 C270 24 288 29 295 22"/><path stroke-width="2.2" d="M7 11 C48 22 90 13 130 26 C170 33 210 15 248 11 C272 9 288 22 294 13"/><path stroke-width="3.1" d="M6 19 C60 6 112 32 162 19 C212 6 252 32 296 19"/><path stroke-width="2.4" d="M11 30 C62 21 112 8 162 23 C212 34 256 14 293 26"/><path stroke-width="2.2" d="M5 8 C56 17 106 28 156 12 C206 4 256 23 294 10"/><path stroke-width="3.4" d="M8 18 C50 24 100 12 150 20 C200 28 250 12 295 18"/><path stroke-width="2.9" d="M64 5 C92 33 120 3 148 35 C176 5 206 35 234 7"/><path stroke-width="2.5" d="M84 36 C108 6 132 36 156 6 C182 34 208 6 232 34"/><path stroke-width="2.7" d="M6 33 C50 28 96 36 140 30 C184 24 232 34 294 29"/><path stroke-width="2.4" d="M7 5 C52 10 98 3 144 8 C190 13 240 4 295 7"/></g></svg><svg class="tick" viewBox="0 0 24 20" style="transform:rotate(-5deg)" aria-hidden="true"><path d="M4 12 C7 14 9 16 10 17.5 C12.5 10.5 16 6 20.5 2.5"/></svg></li>
+        <li style="--r:-0.35deg; --x:3px; --y:-1px">深灰那个 补一份<svg class="tick" viewBox="0 0 24 20" style="transform:rotate(3deg)" aria-hidden="true"><path d="M3 11 C6 13.5 8 15.5 9.5 17 C12 11 16.5 5 21 3"/></svg></li>
+        <li style="--r:0.45deg; --x:1px">拉片笔记 周末</li>
+      </ul>
+
+      <svg class="doodle" viewBox="0 0 64 84" aria-hidden="true">
+        <path d="M8 5 C18 9 25 14 29.5 21 C34 19.5 36 24.5 32.2 26.5 C28.3 28.5 27.3 22.5 30.5 21.2"/>
+        <path d="M31.5 29 C31 40 32 52 31.3 66"/>
+        <path d="M18 42 C26 41 36 41.2 45 42"/>
+      </svg>
+    </div>
+    <div class="tape" aria-hidden="true"></div>
+  </div>
+
+  <div class="tag-card">
+    <div class="tag-title">夹带物 · 编号 ██-附1</div>
+    <div class="tag-row">来源：归还馆藏（索书号 TH-████）内发现，夹于第 ███ 页</div>
+    <div class="tag-row">处理：依馆规公示七日，无人认领，转收存</div>
+    <div class="tag-row">备注：公示期内有人到馆问询两次，均未认领</div>
+  </div>
+
+  <div class="keep-notice" id="keepNotice">该行由书写人本人处理。馆方按原状收存。</div>
+</div>
+
+<div class="site-footer">夹带物按原状收存 · 折痕、污渍与划改均视为原件的一部分</div>
+
+<script>
+// 点击墨团那一行：唯一的交互
+(function () {
+  var line = document.getElementById('inkline');
+  var notice = document.getElementById('keepNotice');
+  var timer = null;
+  line.addEventListener('click', function () {
+    notice.classList.remove('show');
+    void notice.offsetWidth;
+    notice.classList.add('show');
+    clearTimeout(timer);
+    timer = setTimeout(function () { notice.classList.remove('show'); }, 6000);
+  });
+})();
+
+// 收存备注
+console.log(
+  '%c 收存备注 %c 划掉的那行，馆方未作辨认，也不打算辨认。末尾有勾，登记为「已办」。',
+  'background:#2c3a5e;color:#f7f4ee;font-family:monospace;padding:2px 6px;',
+  'color:#5a574e;font-family:monospace;'
+);
+</script>
+
+</body>
+</html>
