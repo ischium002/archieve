@@ -26,6 +26,9 @@
 index.html                    主站全部（CSS + 三页 HTML + 渲染逻辑），~2300 行
 chars-data.js                 内容数据：CHARS / CP_DATA / CONSTELLATIONS / NET_LINKS / NET_POSITIONS
 _header.js                    ↑ 这份数据的 schema 注释稿（纯注释、没被任何页面引用、未入 git，只在本机有）
+lexicon/                      设定词条馆（卡片盒），独立静态页
+  index.html                  页面 + 渲染逻辑
+  lexicon-data.js             词条数据（LEX_CATS / LEX_ENTRIES）← 改词条只动这个
 hub/                          时间线入口页（双宇宙波浪线），独立小 React 页
   hub.src.jsx                 源码（JSX）
   index.html                  部署页，内联的是 Babel 编译产物 ← 改 hub 看第 5 节
@@ -61,6 +64,14 @@ index.html.backup-pre-portrait  历史回滚备份（*.backup* 已 gitignore）
 ### 改世界观页（Universe）
 
 这页没有数据文件，直接改 `index.html` 里 `<div class="page active" id="page-world">` 下的 `world-card`。加一张卡就是复制一个 `world-card` 块。
+注意：族群 / 契约类词条卡已迁入 `lexicon/`（2026-07-18），别在这页复活它们——设定词条一律进词条馆，Universe 页只放综述卡。
+
+### 改设定词条馆（Lexicon）
+
+只动 `lexicon/lexicon-data.js`（schema 注释在文件头，spec 在 `specs/lexicon-card-catalog.md`）。要点：
+- 加词条 = `LEX_ENTRIES` 加对象；`id` 是锚点路由（`lexicon/#<id>`），起了就别改。
+- 编号按数组下标自动生成（含 `draft: true` 占位），所以**别删数组中间的条目**，删 = 后面全体改号；不要的词条标 `draft: true` 雪藏。
+- 词条上架 = 把 `draft: true` 去掉。全站别处引用术语，就链 `lexicon/#<id>`。
 
 ### 新增一个角色（完整 checklist）
 

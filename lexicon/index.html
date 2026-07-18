@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEXICON · 设定词条馆</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS（对齐主站）
+═══════════════════════════════════════════ */
+:root {
+  --bg:     #f7f4ee;
+  --bg2:    #efebe3;
+  --ink:    #181814;
+  --ink2:   #5a574e;
+  --ink3:   #9a9590;
+  --rule:   #d8d2c4;
+  --card:   #fbf8f1;
+  --brass:  #8a6c2a;   /* = 主站 --md */
+  --stamp:  #9c3a2e;   /* 对齐 ephemera 印章红 */
+  --mono:   'DM Mono', monospace;
+  --serif:  'Cormorant Garamond', 'Noto Serif SC', serif;
+  --lh:     28px;      /* 抽出态格线行高 */
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 2rem 1rem 4rem;
+  -webkit-tap-highlight-color: transparent;
+}
+body.locked { overflow: hidden; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+/* ═══════════════════════════════════════════
+   页头
+═══════════════════════════════════════════ */
+.lex-head { max-width: 640px; margin: 0 auto 2rem; }
+.lex-back {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  color: var(--ink3);
+  text-decoration: none;
+}
+.lex-back:hover { color: var(--ink); }
+.lex-title-row { display: flex; align-items: baseline; gap: 0.8rem; margin-top: 1.2rem; }
+.lex-title { font-size: 1.7rem; font-weight: 600; letter-spacing: 0.06em; }
+.lex-title-en {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  color: var(--brass);
+}
+.lex-sub {
+  margin-top: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--ink3);
+}
+
+/* ═══════════════════════════════════════════
+   目录柜
+═══════════════════════════════════════════ */
+.cabinet {
+  max-width: 640px;
+  margin: 0 auto;
+  position: relative;
+  min-height: 280px;
+}
+
+/* ── 闭合态：抽屉面板 ── */
+.drawer-front {
+  position: absolute; inset: 0; z-index: 5;
+  background: var(--bg2);
+  border: 1px solid var(--ink2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  cursor: pointer;
+  transition: transform 0.55s ease, opacity 0.55s ease, visibility 0s linear 0.55s;
+}
+.drawer-front::after {  /* 面板木沿高光 */
+  content: '';
+  position: absolute; inset: 5px;
+  border: 1px solid var(--rule);
+  pointer-events: none;
+}
+.brass-frame {
+  border: 2px solid var(--brass);
+  padding: 3px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+}
+.brass-label {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  padding: 0.7rem 2.2rem;
+  text-align: center;
+}
+.brass-label .l1 {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+  color: var(--ink);
+}
+.brass-label .l2 {
+  margin-top: 0.3rem;
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.16em;
+  color: var(--ink3);
+}
+.drawer-pull {
+  width: 64px; height: 20px;
+  border: 2px solid var(--brass);
+  border-top: none;
+  border-radius: 0 0 40px 40px;
+  position: relative;
+}
+.drawer-pull::before, .drawer-pull::after {
+  content: '';
+  position: absolute; top: -3px;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--brass);
+}
+.drawer-pull::before { left: -3px; }
+.drawer-pull::after  { right: -3px; }
+.drawer-hint {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: var(--ink3);
+}
+.drawer-front:hover .drawer-hint { color: var(--ink2); }
+
+.cabinet.open .drawer-front {
+  transform: translateY(12%) scale(1.04);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ── 翻卡态：抽屉内部 ── */
+.drawer-stack {
+  border: 1px solid var(--ink2);
+  border-top: none;
+  background: var(--bg2);
+  padding: 1.6rem 0.9rem 1.2rem;
+  opacity: 0;
+  transition: opacity 0.45s ease 0.25s;
+}
+.cabinet.open .drawer-stack { opacity: 1; }
+.cabinet.open.no-anim .drawer-front { transition: none; }
+.cabinet.open.no-anim .drawer-stack { transition: none; opacity: 1; }
+
+/* 分隔签 */
+.lex-divider { position: relative; margin-top: 1.9rem; }
+.lex-divider:first-child { margin-top: 0.4rem; }
+.lex-divider-tab {
+  position: absolute; top: -1.45rem;
+  background: var(--bg2);
+  border: 1px solid var(--ink3);
+  border-bottom: none;
+  padding: 0.28rem 1rem 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  color: var(--ink2);
+}
+.lex-divider-tab .n { color: var(--ink3); margin-left: 0.5em; }
+.tab-pos-0 { left: 6%; }
+.tab-pos-1 { left: 38%; }
+.tab-pos-2 { left: 70%; }
+.lex-divider-body {
+  border-top: 1px solid var(--ink3);
+  height: 0.35rem;
+}
+
+/* 卡片露出的顶边 */
+.lex-edge {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.72rem 1.1rem 0.6rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-bottom: none;
+  box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
+  text-align: left;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.lex-edge:nth-child(odd)  { margin-left: 2px; }
+.lex-edge:nth-child(even) { margin-right: 2px; }
+.lex-edge:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+}
+.lex-edge-term {
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lex-edge-num {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  color: var(--ink3);
+  flex-shrink: 0;
+}
+
+.lex-foot {
+  max-width: 640px;
+  margin: 1.4rem auto 0;
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  color: var(--ink3);
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════════
+   抽出态 overlay
+═══════════════════════════════════════════ */
+.lex-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  display: none;
+  background: rgba(24,24,20,0.38);
+  overflow-y: auto;
+  padding: 3rem 1rem 4rem;
+}
+.lex-overlay.show { display: block; }
+
+.lex-pulled {
+  position: relative;
+  width: min(560px, 100%);
+  margin: 0 auto;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.22);
+  padding: 1.8rem 2.2rem 3.4rem;
+  animation: pullOut 0.32s ease;
+}
+@keyframes pullOut {
+  from { transform: translateY(46px) rotate(0.5deg); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+.pulled-close {
+  position: absolute; top: 0.5rem; right: 0.7rem;
+  font-family: var(--mono);
+  font-size: 1rem;
+  color: var(--ink3);
+  padding: 0.3rem 0.5rem;
+}
+.pulled-close:hover { color: var(--ink); }
+
+.pulled-num {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  color: var(--ink3);
+}
+.pulled-head {
+  border-bottom: 1px solid rgba(156,58,46,0.5);  /* 目录卡红头线 */
+  padding: 0.5rem 0 0.7rem;
+  margin-bottom: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.pulled-term { font-size: 1.55rem; font-weight: 600; letter-spacing: 0.05em; }
+.pulled-sub {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  color: var(--ink3);
+}
+.pulled-stamp {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.24em;
+  color: var(--stamp);
+  border: 1px solid var(--stamp);
+  padding: 0.25rem 0.6rem 0.25rem 0.8rem;
+  transform: rotate(-4deg);
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+/* 格线区：行高与横线同步 */
+.pulled-body {
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--lh) - 1px),
+    var(--rule) calc(var(--lh) - 1px),
+    var(--rule) var(--lh)
+  );
+  background-origin: content-box;
+  background-clip: content-box;
+  padding-top: calc(var(--lh) * 0.5);
+  min-height: calc(var(--lh) * 4);
+}
+.pulled-def { font-size: 0.95rem; line-height: var(--lh); }
+.pulled-note {
+  margin-top: var(--lh);
+  font-size: 0.9rem;
+  line-height: var(--lh);
+  font-style: italic;
+  color: var(--ink3);
+}
+.pulled-note::before { content: '\270E  '; }
+
+.pulled-see {
+  margin-top: 1.6rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--ink3);
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+.pulled-see-link {
+  color: var(--ink2);
+  border-bottom: 1px dotted var(--ink3);
+  padding: 0;
+  letter-spacing: 0.1em;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+}
+.pulled-see-link:hover { color: var(--ink); border-bottom-color: var(--ink); }
+.pulled-see-dead { color: var(--ink3); }
+
+.lex-pulled::after {  /* 底部穿杆圆孔 */
+  content: '';
+  position: absolute;
+  bottom: 0.9rem; left: 50%;
+  transform: translateX(-50%);
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
+}
+
+/* ═══════════════════════════════════════════
+   移动端（断点沿用站内 600）
+═══════════════════════════════════════════ */
+@media (max-width: 600px) {
+  body { padding: 1.4rem 0.7rem 3rem; }
+  .lex-title { font-size: 1.4rem; }
+  .drawer-stack { padding: 1.5rem 0.5rem 1rem; }
+  .brass-label { padding: 0.6rem 1.4rem; }
+  .lex-pulled { padding: 1.5rem 1.2rem 3rem; }
+  .pulled-term { font-size: 1.25rem; }
+  .lex-overlay { padding: 1.6rem 0.7rem 3rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="lex-head">
+  <a class="lex-back" href="../index.html#world">&larr; ARCHIVE</a>
+  <div class="lex-title-row">
+    <h1 class="lex-title">设定词条馆</h1>
+    <span class="lex-title-en">LEXICON</span>
+  </div>
+  <div class="lex-sub">研究所内部术语手册 · 非涉密摘录版</div>
+</header>
+
+<div class="cabinet" id="cabinet">
+  <div class="drawer-stack" id="drawer-stack"><!-- JS 渲染 --></div>
+  <button class="drawer-front" id="drawer-front" aria-label="拉开抽屉">
+    <div class="brass-frame">
+      <div class="brass-label">
+        <div class="l1">LEXICON</div>
+        <div class="l2">词条 · 术语</div>
+      </div>
+    </div>
+    <div class="drawer-pull" aria-hidden="true"></div>
+    <div class="drawer-hint">拉开抽屉</div>
+  </button>
+</div>
+
+<div class="lex-foot">馆藏编号以入柜顺序为准 · 缺号为待归档词条</div>
+
+<div class="lex-overlay" id="lex-overlay">
+  <div class="lex-pulled" id="lex-pulled" role="dialog" aria-modal="true"><!-- JS 渲染 --></div>
+</div>
+
+<script src="lexicon-data.js"></script>
+<script>
+(function () {
+  const cabinet = document.getElementById('cabinet');
+  const stack   = document.getElementById('drawer-stack');
+  const overlay = document.getElementById('lex-overlay');
+  const pulled  = document.getElementById('lex-pulled');
+
+  const numOf = i => 'LEX-' + String(i + 1).padStart(3, '0');
+  const byId  = {};
+  LEX_ENTRIES.forEach((e, i) => { byId[e.id] = { entry: e, num: numOf(i) }; });
+
+  /* ── 渲染抽屉内部：分类分组，露顶边 ── */
+  let catIdx = 0;
+  LEX_CATS.forEach(cat => {
+    const items = LEX_ENTRIES.map((e, i) => ({ e, i }))
+      .filter(({ e }) => e.cat === cat.key && !e.draft);
+    if (!items.length) return;
+
+    const div = document.createElement('div');
+    div.className = 'lex-divider';
+    div.innerHTML =
+      '<span class="lex-divider-tab tab-pos-' + (catIdx % 3) + '">' +
+        cat.label + '<span class="n">' + items.length + '</span></span>' +
+      '<div class="lex-divider-body"></div>';
+    stack.appendChild(div);
+    catIdx++;
+
+    items.forEach(({ e, i }) => {
+      const btn = document.createElement('button');
+      btn.className = 'lex-edge';
+      btn.innerHTML =
+        '<span class="lex-edge-term">' + e.term + '</span>' +
+        '<span class="lex-edge-num">' + numOf(i) + '</span>';
+      btn.addEventListener('click', () => { location.hash = e.id; });
+      stack.appendChild(btn);
+    });
+  });
+
+  /* ── 抽屉开合 ── */
+  function openDrawer(instant) {
+    if (instant) cabinet.classList.add('no-anim');
+    cabinet.classList.add('open');
+    if (instant) requestAnimationFrame(() => cabinet.classList.remove('no-anim'));
+  }
+  document.getElementById('drawer-front').addEventListener('click', () => openDrawer(false));
+
+  /* ── 抽出态 ── */
+  function renderPulled(id) {
+    const rec = byId[id];
+    if (!rec) return false;
+    const e = rec.entry;
+
+    let seeHtml = '';
+    if (e.see && e.see.length) {
+      seeHtml = '<div class="pulled-see"><span>参见 SEE ALSO</span>' +
+        e.see.map(sid => {
+          const t = byId[sid];
+          if (t && !t.entry.draft) {
+            return '<button class="pulled-see-link" data-see="' + sid + '">' + t.entry.term + '</button>';
+          }
+          const name = t ? t.entry.term : sid;
+          return '<span class="pulled-see-dead">' + name + '（待归档）</span>';
+        }).join('') +
+        '</div>';
+    }
+
+    pulled.innerHTML =
+      '<button class="pulled-close" aria-label="放回卡片">&times;</button>' +
+      '<div class="pulled-num">' + rec.num + '</div>' +
+      '<div class="pulled-head">' +
+        '<div><span class="pulled-term">' + e.term + '</span>' +
+          (e.sub ? ' <span class="pulled-sub">' + e.sub + '</span>' : '') +
+        '</div>' +
+        '<span class="pulled-stamp">' + (LEX_CATS.find(c => c.key === e.cat) || {}).label + '</span>' +
+      '</div>' +
+      '<div class="pulled-body">' +
+        '<div class="pulled-def">' + e.def + '</div>' +
+        (e.note ? '<div class="pulled-note">' + e.note + '</div>' : '') +
+      '</div>' +
+      seeHtml;
+
+    pulled.querySelector('.pulled-close').addEventListener('click', closeEntry);
+    pulled.querySelectorAll('.pulled-see-link').forEach(b => {
+      b.addEventListener('click', () => { location.hash = b.dataset.see; });
+    });
+    return true;
+  }
+
+  function closeEntry() {
+    history.replaceState(null, '', location.pathname + location.search);
+    applyHash(false);
+  }
+  overlay.addEventListener('click', ev => { if (ev.target === overlay) closeEntry(); });
+  document.addEventListener('keydown', ev => {
+    if (ev.key === 'Escape' && overlay.classList.contains('show')) closeEntry();
+  });
+
+  /* ── hash 驱动 ── */
+  function applyHash(initial) {
+    const id = decodeURIComponent(location.hash.replace(/^#/, ''));
+    const rec = byId[id];
+    if (rec && !rec.entry.draft) {
+      openDrawer(initial);           // 深链直达：跳过关抽屉仪式
+      renderPulled(id);
+      overlay.classList.add('show');
+      overlay.scrollTop = 0;
+      document.body.classList.add('locked');
+    } else {
+      overlay.classList.remove('show');
+      document.body.classList.remove('locked');
+    }
+  }
+  window.addEventListener('hashchange', () => applyHash(false));
+  applyHash(true);
+
+  console.log('%c[馆员] 抽完的卡片请按原位放回。', 'color:#8a6c2a;font-family:monospace');
+})();
+</script>
+</body>
+</html>
