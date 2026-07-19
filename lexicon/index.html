@@ -21,6 +21,7 @@
   --card:   #fbf8f1;
   --brass:  #8a6c2a;   /* = 主站 --md */
   --stamp:  #9c3a2e;   /* 对齐 ephemera 印章红 */
+  --hollow: #e6e1d4;   /* 抽屉内膛 */
   --mono:   'DM Mono', monospace;
   --serif:  'Cormorant Garamond', 'Noto Serif SC', serif;
   --lh:     28px;      /* 抽出态格线行高 */
@@ -69,158 +70,205 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 /* ═══════════════════════════════════════════
-   目录柜
+   目录柜：柜体
 ═══════════════════════════════════════════ */
 .cabinet {
   max-width: 640px;
   margin: 0 auto;
-  position: relative;
-  min-height: 280px;
+  border: 1px solid var(--ink);
 }
-
-/* ── 闭合态：抽屉面板 ── */
-.drawer-front {
-  position: absolute; inset: 0; z-index: 5;
-  background: var(--bg2);
-  border: 1px solid var(--ink2);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.4rem;
-  cursor: pointer;
-  transition: transform 0.55s ease, opacity 0.55s ease, visibility 0s linear 0.55s;
-}
-.drawer-front::after {  /* 面板木沿高光 */
-  content: '';
-  position: absolute; inset: 5px;
-  border: 1px solid var(--rule);
-  pointer-events: none;
-}
-.brass-frame {
-  border: 2px solid var(--brass);
-  padding: 3px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
-}
-.brass-label {
-  background: var(--card);
-  border: 1px solid var(--rule);
-  padding: 0.7rem 2.2rem;
-  text-align: center;
-}
-.brass-label .l1 {
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.3em;
-  color: var(--ink);
-}
-.brass-label .l2 {
-  margin-top: 0.3rem;
-  font-family: var(--mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.16em;
-  color: var(--ink3);
-}
-.drawer-pull {
-  width: 64px; height: 20px;
-  border: 2px solid var(--brass);
-  border-top: none;
-  border-radius: 0 0 40px 40px;
-  position: relative;
-}
-.drawer-pull::before, .drawer-pull::after {
-  content: '';
-  position: absolute; top: -3px;
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--brass);
-}
-.drawer-pull::before { left: -3px; }
-.drawer-pull::after  { right: -3px; }
-.drawer-hint {
-  font-family: var(--mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.2em;
-  color: var(--ink3);
-}
-.drawer-front:hover .drawer-hint { color: var(--ink2); }
-
-.cabinet.open .drawer-front {
-  transform: translateY(12%) scale(1.04);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-/* ── 翻卡态：抽屉内部 ── */
-.drawer-stack {
-  border: 1px solid var(--ink2);
-  border-top: none;
-  background: var(--bg2);
-  padding: 1.6rem 0.9rem 1.2rem;
-  opacity: 0;
-  transition: opacity 0.45s ease 0.25s;
-}
-.cabinet.open .drawer-stack { opacity: 1; }
-.cabinet.open.no-anim .drawer-front { transition: none; }
-.cabinet.open.no-anim .drawer-stack { transition: none; opacity: 1; }
-
-/* 分隔签 */
-.lex-divider { position: relative; margin-top: 1.9rem; }
-.lex-divider:first-child { margin-top: 0.4rem; }
-.lex-divider-tab {
-  position: absolute; top: -1.45rem;
-  background: var(--bg2);
-  border: 1px solid var(--ink3);
-  border-bottom: none;
-  padding: 0.28rem 1rem 0.5rem;
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
-  color: var(--ink2);
-}
-.lex-divider-tab .n { color: var(--ink3); margin-left: 0.5em; }
-.tab-pos-0 { left: 6%; }
-.tab-pos-1 { left: 38%; }
-.tab-pos-2 { left: 70%; }
-.lex-divider-body {
-  border-top: 1px solid var(--ink3);
-  height: 0.35rem;
-}
-
-/* 卡片露出的顶边 */
-.lex-edge {
-  width: 100%;
+.cabinet-plate {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.72rem 1.1rem 0.6rem;
-  background: var(--card);
-  border: 1px solid var(--rule);
-  border-bottom: none;
-  box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
+  padding: 0.6rem 1.1rem;
+  border-bottom: 1px solid var(--ink);
+  background: var(--bg);
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.24em;
+  color: var(--ink2);
+}
+.cabinet-plate .r { color: var(--ink3); letter-spacing: 0.14em; }
+.plate-find {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.24em;
+  color: var(--ink3);
+  padding: 0;
+}
+.plate-find:hover { color: var(--ink); }
+.plate-find.on { color: var(--brass); }
+
+/* ── 柜内检索（隐藏式查卡屉） ── */
+.cabinet-search-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s ease;
+}
+.cabinet-search-wrap.show { grid-template-rows: 1fr; }
+.cabinet-search-clip { overflow: hidden; min-height: 0; }
+.cabinet-search {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  padding: 0.55rem 1.1rem;
+  border-bottom: 1px solid var(--ink);
+  background: var(--bg);
+}
+.cabinet-search label {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.24em;
+  color: var(--ink3);
+}
+.cabinet-search input {
+  flex: 1;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  background: none;
+  border: none;
+  border-bottom: 1px dotted var(--rule);
+  padding: 0.1rem 0;
+  outline: none;
+}
+.cabinet-search input:focus { border-bottom-color: var(--brass); }
+.cabinet-search input::placeholder { color: var(--ink3); }
+.drawer.mute .drawer-face { opacity: 0.35; }
+.lex-card.dim { opacity: 0.22; pointer-events: none; }
+
+/* ── 单只抽屉 ── */
+.drawer { border-top: 1px solid var(--ink); }
+.drawer:first-of-type { border-top: none; }
+
+/* 抽屉面板 */
+.drawer-face {
+  position: relative;
+  width: 100%;
   text-align: left;
-  transition: transform 0.16s ease, box-shadow 0.16s ease;
+  display: flex;
+  align-items: baseline;
+  gap: 1.1rem;
+  padding: 1.15rem 1.3rem;
+  background: var(--bg2);
+  transition: background 0.2s ease;
 }
-.lex-edge:nth-child(odd)  { margin-left: 2px; }
-.lex-edge:nth-child(even) { margin-right: 2px; }
-.lex-edge:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+.drawer-face:hover { background: var(--hollow); }
+.drawer.open .drawer-face { background: var(--bg); }
+.face-spacer { flex: 1; min-width: 24px; }
+.face-cat {
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
 }
-.lex-edge-term {
+.face-meta {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.16em;
+  color: var(--ink3);
+  white-space: nowrap;
+}
+.drawer-pull {  /* 目录柜杯式拉手：厚背板＋弧形指扣 */
+  align-self: center;
+  width: 54px; height: 16px;
+  border: 1.5px solid var(--brass);
+  border-top-width: 5px;
+  border-radius: 1px 1px 9px 9px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.drawer-face:hover .drawer-pull { transform: translateY(1px); }
+
+/* ── 抽屉内膛：拉开后在面板上方展开 ── */
+.drawer-tray {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.55s cubic-bezier(0.22, 1, 0.3, 1);
+}
+.drawer.open .drawer-tray { grid-template-rows: 1fr; }
+.drawer.no-anim .drawer-tray { transition: none; }
+.tray-clip { overflow: hidden; min-height: 0; }
+.tray-in {
+  background: var(--hollow);
+  border-top: 1px solid var(--rule);
+  padding: 1.5rem 1.1rem 0;
+}
+
+/* ── 立在抽屉里的索引卡 ── */
+.lex-card {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  height: 5rem;
+  padding: 0.66rem 1.05rem 0;
+  background: var(--card);
+  border: 1px solid var(--ink3);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  text-align: left;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+.lex-card::before {  /* 卡头红线：索引卡制式 */
+  content: '';
+  position: absolute; left: 0.7rem; right: 0.7rem; top: 1.85rem;
+  border-top: 1px solid rgba(156,58,46,0.42);
+}
+.lex-card + .lex-card { margin-top: -2.9rem; }
+.lex-card.draft {
+  border-style: dashed;
+  border-color: var(--rule);
+  background: var(--bg2);
+  cursor: default;
+}
+.lex-card.draft .lex-card-term { color: var(--ink3); font-style: italic; }
+.lex-card.draft:hover { transform: translateY(-6px); border-color: var(--ink3); z-index: 30; }
+.lex-card-tag {
+  font-family: var(--mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  color: var(--ink3);
+  border: 1px solid var(--rule);
+  padding: 0.08rem 0.4rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.lex-card:hover:not(.draft), .lex-card:focus-visible {
+  transform: translateY(-13px);
+  border-color: var(--ink);
+  z-index: 30;
+  outline: none;
+}
+.lex-card-term {
   font-size: 0.95rem;
   letter-spacing: 0.04em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.lex-edge-num {
+.lex-card-num {
   font-family: var(--mono);
   font-size: 0.55rem;
   letter-spacing: 0.12em;
   color: var(--ink3);
   flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* 抽屉底：压卡横杆 */
+.tray-rod {
+  position: relative;
+  z-index: 40;
+  height: 0;
+  border-top: 2px solid var(--brass);
+  margin: 0 -1.1rem;
 }
 
 .lex-foot {
@@ -250,8 +298,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   width: min(560px, 100%);
   margin: 0 auto;
   background: var(--card);
-  border: 1px solid var(--rule);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.22);
+  border: 1px solid var(--ink2);
+  border-radius: 6px 6px 0 0;
   padding: 1.8rem 2.2rem 3.4rem;
   animation: pullOut 0.32s ease;
 }
@@ -259,6 +307,12 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   from { transform: translateY(46px) rotate(0.5deg); opacity: 0; }
   to   { transform: none; opacity: 1; }
 }
+@keyframes pushBack {
+  from { transform: none; opacity: 1; }
+  to   { transform: translateY(46px) rotate(-0.4deg); opacity: 0; }
+}
+.lex-pulled.swap-out { animation: pushBack 0.2s ease forwards; }
+.lex-pulled.swap-in  { animation: pullOut 0.3s ease; }
 
 .pulled-close {
   position: absolute; top: 0.5rem; right: 0.7rem;
@@ -352,6 +406,26 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .pulled-see-link:hover { color: var(--ink); border-bottom-color: var(--ink); }
 .pulled-see-dead { color: var(--ink3); }
 
+/* 相邻翻阅 */
+.pulled-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 2.5rem;
+  margin-top: 1.5rem;
+}
+.pulled-nav-btn {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--ink3);
+  padding: 0.2rem 0;
+  max-width: 45%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pulled-nav-btn:hover { color: var(--ink); }
+
 .lex-pulled::after {  /* 底部穿杆圆孔 */
   content: '';
   position: absolute;
@@ -361,7 +435,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   border-radius: 50%;
   background: var(--bg);
   border: 1px solid var(--rule);
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
 }
 
 /* ═══════════════════════════════════════════
@@ -370,8 +443,20 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 @media (max-width: 600px) {
   body { padding: 1.4rem 0.7rem 3rem; }
   .lex-title { font-size: 1.4rem; }
-  .drawer-stack { padding: 1.5rem 0.5rem 1rem; }
-  .brass-label { padding: 0.6rem 1.4rem; }
+  .drawer-face {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    row-gap: 0.2rem;
+    column-gap: 1rem;
+    padding: 0.9rem 1rem;
+  }
+  .face-cat  { grid-column: 1; grid-row: 1; font-size: 1.05rem; }
+  .face-meta { grid-column: 1; grid-row: 2; }
+  .face-spacer { display: none; }
+  .drawer-pull { grid-column: 2; grid-row: 1 / span 2; justify-self: end; }
+  .tray-in { padding: 1.3rem 0.7rem 0; }
+  .tray-rod { margin: 0 -0.7rem; }
   .lex-pulled { padding: 1.5rem 1.2rem 3rem; }
   .pulled-term { font-size: 1.25rem; }
   .lex-overlay { padding: 1.6rem 0.7rem 3rem; }
@@ -390,17 +475,11 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 </header>
 
 <div class="cabinet" id="cabinet">
-  <div class="drawer-stack" id="drawer-stack"><!-- JS 渲染 --></div>
-  <button class="drawer-front" id="drawer-front" aria-label="拉开抽屉">
-    <div class="brass-frame">
-      <div class="brass-label">
-        <div class="l1">LEXICON</div>
-        <div class="l2">词条 · 术语</div>
-      </div>
-    </div>
-    <div class="drawer-pull" aria-hidden="true"></div>
-    <div class="drawer-hint">拉开抽屉</div>
-  </button>
+  <div class="cabinet-plate"><span>LEXICON · CARD CATALOG</span><button class="plate-find" id="lex-find-toggle" aria-expanded="false">查卡 ⌕</button><span class="r">目录柜 No.03</span></div>
+  <div class="cabinet-search-wrap" id="lex-search-wrap"><div class="cabinet-search-clip">
+    <div class="cabinet-search"><label for="lex-q">检索 INDEX</label><input id="lex-q" type="text" autocomplete="off" placeholder="输入词条名或关键字…"></div>
+  </div></div>
+  <!-- JS 渲染各分类抽屉 -->
 </div>
 
 <div class="lex-foot">馆藏编号以入柜顺序为准 · 缺号为待归档词条</div>
@@ -413,7 +492,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 <script>
 (function () {
   const cabinet = document.getElementById('cabinet');
-  const stack   = document.getElementById('drawer-stack');
   const overlay = document.getElementById('lex-overlay');
   const pulled  = document.getElementById('lex-pulled');
 
@@ -421,42 +499,132 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   const byId  = {};
   LEX_ENTRIES.forEach((e, i) => { byId[e.id] = { entry: e, num: numOf(i) }; });
 
-  /* ── 渲染抽屉内部：分类分组，露顶边 ── */
-  let catIdx = 0;
+  /* ── 渲染：每个分类一只抽屉 ── */
+  const drawerByCat = {};
   LEX_CATS.forEach(cat => {
     const items = LEX_ENTRIES.map((e, i) => ({ e, i }))
-      .filter(({ e }) => e.cat === cat.key && !e.draft);
+      .filter(({ e }) => e.cat === cat.key);
     if (!items.length) return;
+    const liveCount  = items.filter(({ e }) => !e.draft).length;
+    const draftCount = items.length - liveCount;
 
-    const div = document.createElement('div');
-    div.className = 'lex-divider';
-    div.innerHTML =
-      '<span class="lex-divider-tab tab-pos-' + (catIdx % 3) + '">' +
-        cat.label + '<span class="n">' + items.length + '</span></span>' +
-      '<div class="lex-divider-body"></div>';
-    stack.appendChild(div);
-    catIdx++;
+    const d = document.createElement('div');
+    d.className = 'drawer';
+    d.innerHTML =
+      '<div class="drawer-tray"><div class="tray-clip"><div class="tray-in">' +
+        items.map(({ e, i }) => e.draft
+          ? '<button class="lex-card draft" disabled aria-disabled="true">' +
+              '<span class="lex-card-term">' + e.term + '</span>' +
+              '<span class="lex-card-tag">待归档</span>' +
+              '<span class="lex-card-num">' + numOf(i) + '</span>' +
+            '</button>'
+          : '<button class="lex-card" data-id="' + e.id + '">' +
+              '<span class="lex-card-term">' + e.term + '</span>' +
+              '<span class="lex-card-num">' + numOf(i) + '</span>' +
+            '</button>'
+        ).join('') +
+        '<div class="tray-rod"></div>' +
+      '</div></div></div>' +
+      '<button class="drawer-face" aria-expanded="false">' +
+        '<span class="face-cat">' + cat.label + '</span>' +
+        '<span class="face-meta">' + cat.key.toUpperCase() + ' · ' + liveCount + ' 张' + (draftCount ? ' · ' + draftCount + ' 待归档' : '') + '</span>' +
+        '<span class="face-spacer" aria-hidden="true"></span>' +
+        '<span class="drawer-pull" aria-hidden="true"></span>' +
+      '</button>';
 
-    items.forEach(({ e, i }) => {
-      const btn = document.createElement('button');
-      btn.className = 'lex-edge';
-      btn.innerHTML =
-        '<span class="lex-edge-term">' + e.term + '</span>' +
-        '<span class="lex-edge-num">' + numOf(i) + '</span>';
-      btn.addEventListener('click', () => { location.hash = e.id; });
-      stack.appendChild(btn);
+    const face = d.querySelector('.drawer-face');
+    face.addEventListener('click', () => {
+      const open = d.classList.toggle('open');
+      face.setAttribute('aria-expanded', open);
     });
+    const cards = Array.from(d.querySelectorAll('.lex-card'));
+    cards.forEach((btn, ci) => {
+      const rec = byId[btn.dataset.id];
+      const e2 = rec ? rec.entry : items[ci].e;
+      btn.dataset.q = (e2.term + ' ' + (e2.sub || '') + ' ' + (e2.def || '')).toLowerCase();
+      if (!btn.dataset.id) return;
+      btn.addEventListener('click', () => { location.hash = btn.dataset.id; });
+      btn.addEventListener('keydown', ev => {  // 卡堆内上下键移动
+        if (ev.key !== 'ArrowDown' && ev.key !== 'ArrowUp') return;
+        ev.preventDefault();
+        const live = cards.filter(c => c.dataset.id);
+        const j = live.indexOf(btn) + (ev.key === 'ArrowDown' ? 1 : -1);
+        if (live[j]) live[j].focus();
+      });
+    });
+
+    cabinet.appendChild(d);
+    drawerByCat[cat.key] = d;
   });
 
-  /* ── 抽屉开合 ── */
-  function openDrawer(instant) {
-    if (instant) cabinet.classList.add('no-anim');
-    cabinet.classList.add('open');
-    if (instant) requestAnimationFrame(() => cabinet.classList.remove('no-anim'));
+  function openDrawerFor(catKey, instant) {
+    const d = drawerByCat[catKey];
+    if (!d || d.classList.contains('open')) return;
+    if (instant) d.classList.add('no-anim');
+    d.classList.add('open');
+    d.querySelector('.drawer-face').setAttribute('aria-expanded', 'true');
+    if (instant) requestAnimationFrame(() => d.classList.remove('no-anim'));
   }
-  document.getElementById('drawer-front').addEventListener('click', () => openDrawer(false));
+
+  /* ── 柜内检索 ── */
+  const q = document.getElementById('lex-q');
+  const findToggle = document.getElementById('lex-find-toggle');
+  const searchWrap = document.getElementById('lex-search-wrap');
+  findToggle.addEventListener('click', () => {
+    const open = searchWrap.classList.toggle('show');
+    findToggle.classList.toggle('on', open);
+    findToggle.setAttribute('aria-expanded', open);
+    if (open) setTimeout(() => q.focus(), 360);
+    else if (q.value) { q.value = ''; q.dispatchEvent(new Event('input')); }
+  });
+  let preSearchOpen = null;
+  q.addEventListener('input', () => {
+    const v = q.value.trim().toLowerCase();
+    const drawers = Object.values(drawerByCat);
+    if (v && preSearchOpen === null) preSearchOpen = drawers.filter(d => d.classList.contains('open'));
+    drawers.forEach(d => {
+      const cards = Array.from(d.querySelectorAll('.lex-card'));
+      let hit = 0;
+      cards.forEach(c => {
+        const ok = !v || c.dataset.q.includes(v);
+        c.classList.toggle('dim', !ok);
+        if (ok && v) hit++;
+      });
+      if (v) {
+        d.classList.toggle('mute', !hit);
+        setDrawer(d, hit > 0);
+      } else {
+        d.classList.remove('mute');
+        setDrawer(d, preSearchOpen ? preSearchOpen.includes(d) : d.classList.contains('open'));
+      }
+    });
+    if (!v) preSearchOpen = null;
+  });
+  function setDrawer(d, open) {
+    d.classList.toggle('open', open);
+    d.querySelector('.drawer-face').setAttribute('aria-expanded', open);
+  }
 
   /* ── 抽出态 ── */
+  let currentId = null, swapping = false;
+  function neighborsOf(id) {
+    const e = byId[id].entry;
+    const sib = LEX_ENTRIES.filter(x => x.cat === e.cat && !x.draft);
+    const k = sib.findIndex(x => x.id === id);
+    return { prev: sib[k - 1] || null, next: sib[k + 1] || null };
+  }
+  function navTo(id) {  // 换卡仪式：先插回，再抽出
+    if (swapping || !byId[id]) return;
+    swapping = true;
+    pulled.classList.add('swap-out');
+    setTimeout(() => {
+      pulled.classList.remove('swap-out');
+      location.hash = id;
+      pulled.classList.add('swap-in');
+      overlay.scrollTop = 0;
+      setTimeout(() => { pulled.classList.remove('swap-in'); swapping = false; }, 320);
+    }, 190);
+  }
   function renderPulled(id) {
     const rec = byId[id];
     if (!rec) return false;
@@ -491,9 +659,22 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       '</div>' +
       seeHtml;
 
+    const nb = neighborsOf(id);
+    if (nb.prev || nb.next) {
+      pulled.innerHTML +=
+        '<div class="pulled-nav">' +
+          (nb.prev ? '<button class="pulled-nav-btn" data-nav="' + nb.prev.id + '">&larr; ' + nb.prev.term + '</button>' : '<span></span>') +
+          (nb.next ? '<button class="pulled-nav-btn" data-nav="' + nb.next.id + '">' + nb.next.term + ' &rarr;</button>' : '<span></span>') +
+        '</div>';
+    }
+
+    currentId = id;
     pulled.querySelector('.pulled-close').addEventListener('click', closeEntry);
     pulled.querySelectorAll('.pulled-see-link').forEach(b => {
-      b.addEventListener('click', () => { location.hash = b.dataset.see; });
+      b.addEventListener('click', () => navTo(b.dataset.see));
+    });
+    pulled.querySelectorAll('.pulled-nav-btn').forEach(b => {
+      b.addEventListener('click', () => navTo(b.dataset.nav));
     });
     return true;
   }
@@ -504,7 +685,13 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   }
   overlay.addEventListener('click', ev => { if (ev.target === overlay) closeEntry(); });
   document.addEventListener('keydown', ev => {
-    if (ev.key === 'Escape' && overlay.classList.contains('show')) closeEntry();
+    if (!overlay.classList.contains('show')) return;
+    if (ev.key === 'Escape') { closeEntry(); return; }
+    if (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') {
+      const nb = currentId ? neighborsOf(currentId) : {};
+      const t = ev.key === 'ArrowLeft' ? nb.prev : nb.next;
+      if (t) navTo(t.id);
+    }
   });
 
   /* ── hash 驱动 ── */
@@ -512,7 +699,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     const id = decodeURIComponent(location.hash.replace(/^#/, ''));
     const rec = byId[id];
     if (rec && !rec.entry.draft) {
-      openDrawer(initial);           // 深链直达：跳过关抽屉仪式
+      openDrawerFor(rec.entry.cat, initial);  // 深链直达：跳过拉抽屉仪式
       renderPulled(id);
       overlay.classList.add('show');
       overlay.scrollTop = 0;
